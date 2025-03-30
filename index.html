@@ -1,186 +1,181 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
     <meta charset="utf-8"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0"/>
-    <title>“閒”是生活的標點 - 倒计时</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+    <link rel="stylesheet" href="css/flipclock.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" href="https://raw.githubusercontent.com/iTaoPu/iTaoPu.GitHub.io/refs/heads/List/Jing.png"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+    <script src="js/flipclock.js"></script>
+    <script src="js/sidenav.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>“閒”是生活的標點</title>
     
-    <!-- 多CDN资源加载策略 -->
-    <link rel="stylesheet" 
-          href="https://cdn.staticfile.org/materialize/1.0.0/css/materialize.min.css"
-          onerror="loadFallback(this)">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.10.8/flipclock.min.css"
-          onerror="loadFallback(this)">
-    <link href="https://fonts.loli.net/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="icon" href="https://fastly.jsdelivr.net/gh/iTaoPu/iTaoPu.GitHub.io@main/List/Jing.png"/>
-    
-    <!-- 视觉优化 -->
+    <!-- 翻页效果优化样式 -->
     <style>
-        :root {
-            --primary-color: #e53935;
-            --secondary-color: #616161;
+        /* 翻页动画增强 */
+        .flip-clock-wrapper ul {
+            perspective: 1000px;
+        }
+        .flip-clock-wrapper ul li a div div.inn {
+            animation: flip 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            background: linear-gradient(180deg, #fff 0%, #f5f5f5 100%);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes flip {
+            0% { transform: rotateX(0deg) }
+            50% { transform: rotateX(-90deg) }
+            100% { transform: rotateX(0deg) }
         }
 
-        .flip-clock-wrapper {
-            margin: 2rem auto;
-            transform: scale(1.2);
-            --fc-color: var(--primary-color);
-            --fc-divider-color: var(--secondary-color);
-        }
-
+        /* 数字卡片样式 */
         .flip-clock-card {
-            background: linear-gradient(145deg, #ffffff 30%, #f8f9fa 100%);
-            border-radius: 10px;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            background: rgba(255,255,255,0.95);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 1rem;
+            margin: 1rem;
         }
 
-        .inn {
-            text-shadow: 0 2px 3px rgba(0,0,0,0.15);
-            font-family: 'Segoe UI', system-ui, sans-serif;
+        /* 时间单位标签 */
+        .flip-clock-divider .flip-clock-label {
+            color: #616161;
+            font-size: 16px;
+            bottom: -24px;
+            text-transform: uppercase;
         }
 
-        @media (max-width: 768px) {
-            .flip-clock-wrapper {
-                transform: scale(0.85);
-                margin: 1rem auto;
-            }
-            h1.header { font-size: 2.5rem; }
-        }
-
-        @media (max-width: 480px) {
-            .flip-clock-wrapper { transform: scale(0.7); }
+        /* 当前数字强调 */
+        .flip-clock-active .inn {
+            color: #e53935;
+            text-shadow: 0 2px 3px rgba(229, 57, 53, 0.2);
         }
     </style>
 </head>
-<body class="grey lighten-4">
-    <!-- 导航栏 -->
-    <nav class="grey darken-3">
-        <div class="nav-wrapper container">
-            <a href="#" class="brand-logo">閒時光</a>
-            <a href="#" data-target="nav-mobile" class="sidenav-trigger">
-                <i class="material-icons">menu</i>
-            </a>
+<body style="display: flex;min-height: 100vh;flex-direction: column;">
+    <!-- 原有导航结构保持不变 -->
+    <nav class="grey darken-3" role="navigation">
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"></a>
             <ul class="right hide-on-med-and-down">
-                <li class="active"><a href="/"><i class="material-icons left">home</i>主页</a></li>
-                <li><a href="https://adrules.5iclub.cloudns.biz" target="_blank">
-                    <i class="material-icons left">ad_units</i>广告规则
-                </a></li>
-                <li><a href="https://status.5iclub.cloudns.biz" target="_blank">
-                    <i class="material-icons left">monitor_heart</i>服务状态
-                </a></li>
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="https://adrules.5iclub.cloudns.biz" target="_blank">AdRules</a></li>
+                <li><a href="https://status.5iclub.cloudns.biz" target="_blank">服务监控</a></li>
             </ul>
+            <ul id="nav-mobile" class="sidenav">
+                <li class="active"><a href="/">Home</a></li>
+                <li><a href="https://adrules.5iclub.cloudns.biz" target="_blank">AdRules</a></li>
+                <li><a href="https://status.5iclub.cloudns.biz" target="_blank">服务监控</a></li>
+            </ul>
+            <a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
         </div>
-    </ul>
+    </nav>
+    
+    <div class="section no-pad-bot" id="index-banner">
+        <div class="container">
+            <br><br>
+            <h1 class="header center red-text">“閒”是生活的標點</h1>
+            <br><br>
+        </div>
+    </div>
 
-    <!-- 主内容 -->
-    <main class="container">
-        <div class="section">
-            <h1 class="header center red-text text-darken-2">“閒”是生活的標點</h1>
-            <div class="row">
-                <div class="col s12">
-                    <div class="clock card-panel hoverable z-depth-3"></div>
-                    <div class="message-container"></div>
-                </div>
+    <main style="flex: 1 0 auto;">
+        <div class="container">
+            <div class="section" style="text-align: center;">
+                <div class="clock card-panel hoverable flip-clock-card" style="display: inline-block; width: auto;"></div>
+                <div class="message"></div>
+                <script type="text/javascript">
+                    var clock;
+                    $(document).ready(function() {
+                        // 设置固定目标时间（北京时间2026年1月1日）
+                        const futureDate = new Date('2026-01-01T00:00:00+08:00');
+
+                        function updateClock() {
+                            const now = new Date();
+                            const diff = Math.floor((futureDate - now) / 1000);
+
+                            if (diff <= 0) {
+                                if(clock) {
+                                    clock.stop();
+                                    $('.message').html('<h5 class="red-text">倒计时已结束！</h5>');
+                                }
+                                return;
+                            }
+
+                            if (!clock) {
+                                // 增强的翻页时钟配置
+                                clock = $('.clock').FlipClock(diff, {
+                                    clockFace: 'DailyCounter',
+                                    countdown: true,
+                                    autoStart: true,
+                                    showSeconds: true,  // 显示秒数
+                                    face: {
+                                        dailyCounter: {
+                                            seconds: {
+                                                color: '#212121',    // 数字颜色
+                                                shadow: true        // 启用投影
+                                            }
+                                        }
+                                    },
+                                    classes: {
+                                        active: 'flip-clock-active',
+                                        divider: 'flip-clock-divider',
+                                        label: 'flip-clock-label'
+                                    },
+                                    callbacks: {
+                                        stop: function() {
+                                            $('.message').html('<h5 class="green-text">活动进行中！</h5>');
+                                        }
+                                    }
+                                });
+                            } else {
+                                clock.setTime(diff);
+                                clock.start();
+                            }
+                        }
+
+                        // 初始化侧边栏
+                        $('.sidenav').sidenav();
+
+                        // 更新间隔调整为更流畅
+                        setInterval(updateClock, 987);
+                        updateClock();
+                    });
+                </script>
             </div>
         </div>
     </main>
 
-    <!-- 页脚 -->
-    <footer class="page-footer grey darken-3">
+    <!-- 原有页脚保持不变 -->
+    <footer class="page-footer grey darken-2">
         <div class="container">
-            <!-- 页脚内容保持原样 -->
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5><li><a class="white-text" href="https://t.me/Centre996" target="_blank">i叚娤倖鍢</a></li></h5>
+                    <p class="grey-text text-lighten-4">人的白嫖，就如同高山滚石一般，一旦开始，就再也停不下了 —— 「鲁迅」</p>
+                </div>
+                <div class="col l3 s12">
+                    <h5 class="white-text"></h5>
+                    <ul>
+                    </ul>
+                </div>
+                <div class="col l3 s12">
+                    <h6 class="white-text">公益服務</h6>
+                    <ul>
+                        <li><a class="white-text" href="https://docker.5iclub.cloudns.biz">5i計劃通行.Docker·镜像仓库</a></li>
+                        <li><a class="white-text" href="https://git.5iclub.cloudns.biz">5i計劃通行.GitHub·文件加速</a></li>
+                        <li><a class="white-text" href="https://url.5iclub.cloudns.biz">5i計劃通行.简约·链接缩短服务</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container" style="position:relative;">
+                &copy; 2022-2025 i叚娤倖鍢
+            </div>
         </div>
     </footer>
-
-    <!-- 多源脚本加载 -->
-    <script>
-        // CDN 容错处理
-        function loadFallback(link) {
-            const cdnMap = {
-                'materialize.min.css': 'https://fastly.jsdelivr.net/npm/materialize-css@1.0.0/dist/css/materialize.min.css',
-                'flipclock.min.css': 'https://fastly.jsdelivr.net/npm/flipclock@0.10.8/flipclock.min.css'
-            };
-            link.href = cdnMap[link.href.split('/').pop()] || link.href;
-        }
-    </script>
-    
-    <!-- 主逻辑 -->
-    <script src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdn.staticfile.org/materialize/1.0.0/js/materialize.min.js"></script>
-    <script src="https://cdn.staticfile.org/flipclock/0.10.8/flipclock.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // 时区安全处理
-            const getBeijingTime = () => {
-                const now = new Date();
-                return new Date(now.toLocaleString("en-US", { 
-                    timeZone: "Asia/Shanghai",
-                    hour12: false
-                }));
-            };
-
-            // 目标时间 (UTC时间对应北京时间2026-01-01 00:00:00)
-            const targetDate = new Date(Date.UTC(2025, 11, 31, 16, 0, 0));
-            let clockInstance;
-
-            // 初始化倒计时
-            const initClock = (diffSeconds) => {
-                clockInstance = new FlipClock($('.clock'), diffSeconds, {
-                    clockFace: 'DailyCounter',
-                    countdown: true,
-                    autoStart: true,
-                    showSeconds: true,
-                    language: 'chinese',
-                    classes: {
-                        active: 'fc-active',
-                        divider: 'fc-divider',
-                        label: 'fc-label'
-                    },
-                    callbacks: {
-                        interval: () => {
-                            const current = getBeijingTime();
-                            if (current >= targetDate) {
-                                clockInstance.stop();
-                                showCompletion();
-                            }
-                        }
-                    }
-                });
-            };
-
-            // 显示完成状态
-            const showCompletion = () => {
-                $('.message-container').html(`
-                    <div class="card-panel teal darken-2 white-text">
-                        <h4>新纪元已开启!</h4>
-                        <p>倒计时圆满结束</p>
-                    </div>
-                `);
-            };
-
-            // 时间同步逻辑
-            const syncTimer = () => {
-                const current = getBeijingTime();
-                const diff = Math.floor((targetDate - current) / 1000);
-
-                if (diff <= 0) {
-                    if (clockInstance) clockInstance.stop();
-                    return;
-                }
-
-                if (!clockInstance) {
-                    initClock(diff);
-                } else {
-                    clockInstance.setValue(diff);
-                }
-            };
-
-            // 初始化组件
-            M.AutoInit();
-            syncTimer();
-            setInterval(syncTimer, 987);
-        });
-    </script>
 </body>
 </html>
