@@ -12,51 +12,8 @@
     <script src="js/sidenav.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>“閒”是生活的標點</title>
-    
-    <!-- 翻页效果优化样式 -->
-    <style>
-        /* 翻页动画增强 */
-        .flip-clock-wrapper ul {
-            perspective: 1000px;
-        }
-        .flip-clock-wrapper ul li a div div.inn {
-            animation: flip 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(180deg, #fff 0%, #f5f5f5 100%);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        
-        @keyframes flip {
-            0% { transform: rotateX(0deg) }
-            50% { transform: rotateX(-90deg) }
-            100% { transform: rotateX(0deg) }
-        }
-
-        /* 数字卡片样式 */
-        .flip-clock-card {
-            background: rgba(255,255,255,0.95);
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-            padding: 1rem;
-            margin: 1rem;
-        }
-
-        /* 时间单位标签 */
-        .flip-clock-divider .flip-clock-label {
-            color: #616161;
-            font-size: 16px;
-            bottom: -24px;
-            text-transform: uppercase;
-        }
-
-        /* 当前数字强调 */
-        .flip-clock-active .inn {
-            color: #e53935;
-            text-shadow: 0 2px 3px rgba(229, 57, 53, 0.2);
-        }
-    </style>
 </head>
 <body style="display: flex;min-height: 100vh;flex-direction: column;">
-    <!-- 原有导航结构保持不变 -->
     <nav class="grey darken-3" role="navigation">
         <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"></a>
             <ul class="right hide-on-med-and-down">
@@ -84,7 +41,7 @@
     <main style="flex: 1 0 auto;">
         <div class="container">
             <div class="section" style="text-align: center;">
-                <div class="clock card-panel hoverable flip-clock-card" style="display: inline-block; width: auto;"></div>
+                <div class="clock card-panel hoverable" style="display: inline-block; width: auto;"></div>
                 <div class="message"></div>
                 <script type="text/javascript">
                     var clock;
@@ -105,50 +62,36 @@
                             }
 
                             if (!clock) {
-                                // 增强的翻页时钟配置
+                                // 初始化时钟
                                 clock = $('.clock').FlipClock(diff, {
                                     clockFace: 'DailyCounter',
                                     countdown: true,
-                                    autoStart: true,
-                                    showSeconds: true,  // 显示秒数
-                                    face: {
-                                        dailyCounter: {
-                                            seconds: {
-                                                color: '#212121',    // 数字颜色
-                                                shadow: true        // 启用投影
-                                            }
-                                        }
-                                    },
-                                    classes: {
-                                        active: 'flip-clock-active',
-                                        divider: 'flip-clock-divider',
-                                        label: 'flip-clock-label'
-                                    },
+                                    autoStart: false,
                                     callbacks: {
                                         stop: function() {
                                             $('.message').html('<h5 class="green-text">活动进行中！</h5>');
                                         }
                                     }
-                                });
+                                }).start();
                             } else {
+                                // 动态更新时间
                                 clock.setTime(diff);
-                                clock.start();
+                                clock.start(); // 确保计时器运行
                             }
                         }
 
                         // 初始化侧边栏
                         $('.sidenav').sidenav();
 
-                        // 更新间隔调整为更流畅
-                        setInterval(updateClock, 987);
-                        updateClock();
+                        // 每秒更新
+                        setInterval(updateClock, 1000);
+                        updateClock(); // 立即初始化
                     });
                 </script>
             </div>
         </div>
     </main>
 
-    <!-- 原有页脚保持不变 -->
     <footer class="page-footer grey darken-2">
         <div class="container">
             <div class="row">
