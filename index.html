@@ -3,45 +3,19 @@
 <head>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.10.8/flipclock.min.css">
+    <link rel="stylesheet" href="css/flipclock.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="icon" href="https://raw.githubusercontent.com/iTaoPu/iTaoPu.GitHub.io/refs/heads/List/Jing.png"/>
-    <style>
-        /* 翻页时钟自定义样式 */
-        .flip-clock-wrapper {
-            margin: 20px auto;
-            transform: scale(1.2);
-        }
-        .flip-clock-card {
-            background: linear-gradient(145deg, #ffffff, #f5f5f5);
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-        }
-        .inn {
-            color: #e53935;
-            font-weight: 700;
-            text-shadow: 0 2px 3px rgba(0,0,0,0.1);
-        }
-        .flip-clock-divider .flip-clock-label {
-            color: #616161;
-            font-size: 16px;
-        }
-        @media (max-width: 768px) {
-            .flip-clock-wrapper {
-                transform: scale(0.8);
-            }
-        }
-    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flipclock/0.10.8/flipclock.min.js"></script>
+    <script src="js/flipclock.js"></script>
+    <script src="js/sidenav.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>“閒”是生活的標點</title>
 </head>
 <body style="display: flex;min-height: 100vh;flex-direction: column;">
     <nav class="grey darken-3" role="navigation">
-        <div class="nav-wrapper container">
-            <a id="logo-container" href="#" class="brand-logo"></a>
+        <div class="nav-wrapper container"><a id="logo-container" href="#" class="brand-logo"></a>
             <ul class="right hide-on-med-and-down">
                 <li class="active"><a href="/">Home</a></li>
                 <li><a href="https://adrules.5iclub.cloudns.biz" target="_blank">AdRules</a></li>
@@ -67,80 +41,51 @@
     <main style="flex: 1 0 auto;">
         <div class="container">
             <div class="section" style="text-align: center;">
-                <div class="clock card-panel hoverable" style="background: #f8f9fa;"></div>
+                <div class="clock card-panel hoverable" style="display: inline-block; width: auto;"></div>
                 <div class="message"></div>
-                <script>
+                <script type="text/javascript">
+                    var clock;
                     $(document).ready(function() {
-                        // 时区安全计算
-                        const getBeijingTime = () => {
+                        // 设置固定目标时间（北京时间2026年1月1日）
+                        const futureDate = new Date('2026-01-01T00:00:00+08:00');
+
+                        function updateClock() {
                             const now = new Date();
-                            return new Date(now.toLocaleString("en-US", {
-                                timeZone: "Asia/Shanghai"
-                            }));
-                        };
-
-                        // 设置目标时间（北京时间2026-01-01 00:00:00）
-                        const targetDate = new Date(Date.UTC(2025, 11, 31, 16, 0, 0));
-                        let flipClock;
-
-                        const initFlipClock = (diff) => {
-                            flipClock = new FlipClock($('.clock'), diff, {
-                                clockFace: 'DailyCounter',
-                                countdown: true,
-                                autoStart: true,
-                                showSeconds: true,
-                                language: 'chinese',
-                                classes: {
-                                    active: 'flip-clock-active',
-                                    divider: 'flip-clock-divider',
-                                    label: 'flip-clock-label'
-                                },
-                                callbacks: {
-                                    interval: function() {
-                                        const current = getBeijingTime();
-                                        if (current >= targetDate) {
-                                            this.stop();
-                                            $('.message').html(`
-                                                <div class="card-panel teal white-text" style="margin-top:20px;">
-                                                    <h5>倒计时圆满结束！</h5>
-                                                    <p>新时代已开启</p>
-                                                </div>
-                                            `);
-                                        }
-                                    }
-                                }
-                            });
-                        };
-
-                        const updateTimer = () => {
-                            const current = getBeijingTime();
-                            const diff = Math.floor((targetDate - current) / 1000);
+                            const diff = Math.floor((futureDate - now) / 1000);
 
                             if (diff <= 0) {
-                                if (flipClock) flipClock.stop();
+                                if(clock) {
+                                    clock.stop();
+                                    $('.message').html('<h5 class="red-text">倒计时已结束！</h5>');
+                                }
                                 return;
                             }
 
-                            if (!flipClock) {
-                                initFlipClock(diff);
+                            if (!clock) {
+                                // 初始化时钟
+                                clock = $('.clock').FlipClock(diff, {
+                                    clockFace: 'DailyCounter',
+                                    countdown: true,
+                                    autoStart: false,
+                                    callbacks: {
+                                        stop: function() {
+                                            $('.message').html('<h5 class="green-text">活动进行中！</h5>');
+                                        }
+                                    }
+                                }).start();
                             } else {
-                                flipClock.setValue(diff);
+                                // 动态更新时间
+                                clock.setTime(diff);
+                                clock.start(); // 确保计时器运行
                             }
-                        };
+                        }
 
-                        // 初始化组件
+                        // 初始化侧边栏
                         $('.sidenav').sidenav();
-                        
-                        // 启动精确计时器
-                        updateTimer();
-                        const timer = setInterval(() => {
-                            const current = getBeijingTime();
-                            if (current >= targetDate) {
-                                clearInterval(timer);
-                                return;
-                            }
-                            updateTimer();
-                        }, 987);
+
+                        // 每秒更新
+                        setInterval(updateClock, 1000);
+                        updateClock(); // 立即初始化
                     });
                 </script>
             </div>
@@ -156,7 +101,8 @@
                 </div>
                 <div class="col l3 s12">
                     <h5 class="white-text"></h5>
-                    <ul></ul>
+                    <ul>
+                    </ul>
                 </div>
                 <div class="col l3 s12">
                     <h6 class="white-text">公益服務</h6>
@@ -169,7 +115,9 @@
             </div>
         </div>
         <div class="footer-copyright">
-            <div class="container">&copy; 2022-2025 i叚娤倖鍢</div>
+            <div class="container" style="position:relative;">
+                &copy; 2022-2025 i叚娤倖鍢
+            </div>
         </div>
     </footer>
 </body>
