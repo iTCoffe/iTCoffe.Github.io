@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/iTCoffe/iTCoffe.Github.io@List/css/materialize.min.css">
     <link rel="stylesheet" href="https://fastly.jsdelivr.net/gh/iTCoffe/iTCoffe.Github.io@List/css/flipclock.css">
     <link href="https://fastly.jsdelivr.net/gh/iTCoffe/iTCoffe.Github.io@List/css/MaterialIcons.css" rel="stylesheet">
-    <link rel="icon" href="https://fastly.jsdelivr.net/gh/iTCoffe/iTCoffe.Github.io@List/Jing.png"/>
+    <link rel="icon" href="https://fastly.jsdelivr.net/gh/iTCoffe/iTCoffe.Github.io@List/LinkCat.png"/>
    
     <style>
         /* --- 頁面結構優化 --- */
@@ -152,6 +152,7 @@
             transform: rotate(30deg);
         }
 
+        /* 默認深色側邊欄樣式 */
         .sidenav { background-color: #212121 !important; }
         .sidenav li a { color: #ffffff !important; }
         .sidenav li a i { color: #ffffff !important; }
@@ -159,7 +160,7 @@
         /* --- 淺色模式樣式 --- */
         body.light-mode {
             background-color: #f5f5f5 !important;
-            color: #212121 !important; /* 加深主體字體顏色 */
+            color: #212121 !important;
         }
 
         /* 導航欄固定深色 */
@@ -167,6 +168,25 @@
         body.light-mode nav ul a, body.light-mode nav i { color: #ffffff !important; }
         body.light-mode .sidenav-trigger i { color: #ffffff !important; }
        
+        /* 淺色模式下的移動端側邊欄 */
+        body.light-mode .sidenav { 
+            background-color: #ffffff !important; 
+        }
+        /* 僅針對導航連結改為深色文字 */
+        body.light-mode .sidenav li a { 
+            color: #212121 !important; 
+        }
+        body.light-mode .sidenav li a i { 
+            color: #212121 !important; 
+        }
+        /* 保持「蜂巢」用戶區域（user-view）為深色風格，不隨 light-mode 更改 */
+        body.light-mode .sidenav li .user-view .name {
+            color: #ffffff !important;
+        }
+        body.light-mode .sidenav li .user-view .background {
+            background-color: #000000 !important;
+        }
+
         /* 加深日期與標語顏色 */
         body.light-mode .sub-text { color: #424242 !important; }
         body.light-mode #bj-date { color: #212121 !important; }
@@ -202,7 +222,7 @@
                 <li><a href="https://adrules.ifanr.pp.ua" target="_blank">AdRules</a></li>
                 <li><a href="https://5iclub.blogspot.com" target="_blank">Blogspot</a></li>
                 <li><a href="https://status.ifanr.pp.ua" target="_blank">服務監控</a></li>
-                <li><a href="https://vlink.cc/ifanr" target="_blank">蜂巢•隱曜</a></li>
+                <li><a href="https://vlink.cc/CNiao" target="_blank">蜂巢•隱曜</a></li>
                 <li><a href="https://ifdian.net/a/CNiao" target="_blank">愛發電•電羊</a></li>
             </ul>
         </div>
@@ -214,7 +234,7 @@
         <li><a href="https://adrules.ifanr.pp.ua" target="_blank">AdRules</a></li>
         <li><a href="https://5iclub.blogspot.com" target="_blank">Blogspot</a></li>
         <li><a href="https://status.ifanr.pp.ua" target="_blank">服務監控</a></li>
-        <li><a href="https://vlink.cc/ifanr" target="_blank">蜂巢•隱曜</a></li>
+        <li><a href="https://vlink.cc/CNiao" target="_blank">蜂巢•隱曜</a></li>
         <li><a href="https://ifdian.net/a/CNiao" target="_blank">愛發電•電羊</a></li>
     </ul>
    
@@ -327,6 +347,4 @@
         });
     </script>
 </body>
-
 </html>
-
