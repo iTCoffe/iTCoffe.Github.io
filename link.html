@@ -5,14 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>文件直链托管 • 稳定版</title>
 
-<!-- 浏览器ICO图标配置 -->
     <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" sizes="32x32">
     <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" type="image/png" sizes="16x16">
     <link rel="apple-touch-icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png">
     <link rel="shortcut icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" type="image/png">
     
     <style>
-        /* 保留你所有的样式代码，无修改 */
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
@@ -459,41 +457,25 @@
             .theme-toggle { width: 36px; height: 36px; font-size: 16px; }
         }
     </style>
-    <!-- 百度统计代码 -->
-    <script>
-        var _hmt = _hmt || [];
-        (function() {
-          var hm = document.createElement("script");
-          hm.src = "https://hm.baidu.com/hm.js?f463aebe70bb41d3370a497b28a6d7ac";
-          var s = document.getElementsByTagName("script")[0]; 
-          s.parentNode.insertBefore(hm, s);
-        })();
-    </script>
 </head>
 <body>
-    <!-- 主题切换按钮 -->
+
     <div class="theme-toggle" id="themeToggle">🌞</div>
-    
-    <!-- Toast提示框 -->
     <div class="toast" id="toast"></div>
 
     <div class="container">
-        <!-- 头部区域 -->
         <div class="header">
             <img src="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" alt="头像" class="avatar">
             <h1 class="title">文件直链托管 • 稳定版</h1>
             <p class="subtitle">稳定可靠的文件直链生成服务 • 永久保存 • 最大支持200MB</p>
         </div>
 
-        <!-- 主卡片 -->
         <div class="card">
-            <!-- 文件信息显示 -->
             <div class="file-info" id="fileInfo">
                 <p>📄 待上传：<span id="fileName"></span></p>
                 <small>大小：<span id="fileSize"></span> | 格式：<span id="fileType"></span></small>
             </div>
 
-            <!-- 上传表单 -->
             <div id="uploadForm">
                 <div class="upload-area" id="dropZone">
                     <div class="upload-icon">🔗</div>
@@ -504,7 +486,6 @@
                 <button class="btn" onclick="document.getElementById('fileInput').click()">开始上传文件</button>
             </div>
 
-            <!-- 进度区域 -->
             <div class="progress-section" id="progressSection">
                 <div class="loading-spinner"></div>
                 <p class="progress-title">正在上传到云端服务器...</p>
@@ -515,7 +496,6 @@
                 <p class="retry-notice" id="retryNotice">⚠️ 当前通道繁忙，正在切换备用线路...</p>
             </div>
 
-            <!-- 结果区域 -->
             <div class="result-section" id="resultSection">
                 <div class="result-item">
                     <label class="result-label">🚀 镜像加速链接</label>
@@ -534,7 +514,6 @@
                 <button class="btn btn-outline" onclick="location.reload()">重新上传</button>
             </div>
 
-            <!-- 上传历史区域 -->
             <div class="history-section" id="historySection">
                 <div class="history-header">
                     <h3 class="history-title">上传历史</h3>
@@ -546,11 +525,9 @@
     </div>
 
     <script>
-        // ===== 全局配置 =====
-        const MAX_FILE_SIZE = 200 * 1024 * 1024; // 200MB
+        const MAX_FILE_SIZE = 200 * 1024 * 1024;
         const FORBIDDEN_TYPES = ['exe', 'bat', 'sh', 'php', 'js', 'py', 'asp', 'aspx', 'jsp'];
 
-        // ===== 主题切换逻辑 =====
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
         const savedTheme = localStorage.getItem('theme');
@@ -575,7 +552,6 @@
             }
         });
 
-        // ===== Toast提示框 =====
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
@@ -586,7 +562,6 @@
             }, 3000);
         }
 
-        // ===== 上传历史功能 =====
         function saveUploadHistory(fileName, rawLink, proxyLink) {
             const history = JSON.parse(localStorage.getItem('uploadHistory') || '[]');
             history.unshift({
@@ -660,7 +635,6 @@
             }
         }
 
-        // ===== 文件校验 =====
         function validateFile(file) {
             if (file.size > MAX_FILE_SIZE) {
                 showToast(`文件大小超过限制！最大支持200MB，当前：${(file.size/1024/1024).toFixed(2)}MB`, 'error');
@@ -676,7 +650,6 @@
             return true;
         }
 
-        // ===== 核心DOM元素 =====
         const fileInput = document.getElementById('fileInput');
         const dropZone = document.getElementById('dropZone');
         const progressSection = document.getElementById('progressSection');
@@ -687,12 +660,10 @@
         const fileSizeEl = document.getElementById('fileSize');
         const fileTypeEl = document.getElementById('fileType');
 
-        // 页面加载渲染历史
         window.addEventListener('load', () => {
             renderHistory();
         });
 
-        // ===== 拖拽功能 =====
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, preventDefaults, false);
         });
@@ -724,7 +695,6 @@
             }
         }
 
-        // 显示文件信息
         function showFileInfo(file) {
             const fileExt = file.name.split('.').pop()?.toLowerCase() || '未知';
             const fileSize = (file.size/1024/1024).toFixed(2) + 'MB';
@@ -735,7 +705,6 @@
             fileInfo.style.display = 'block';
         }
 
-        // 点击上传
         dropZone.addEventListener('click', () => fileInput.click());
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length) {
@@ -747,18 +716,15 @@
             }
         });
 
-        // ===== 核心上传配置（原作者逻辑）=====
         const API = 'https://catbox.moe/user/api.php';
         const DOMAIN = 'https://down.nigx.cn/';
         
-        // 原作者的代理池（关键）
         const PROXY_POOL = [
             'https://corsproxy.io/?',
             'https://thingproxy.freeboard.io/fetch/',
             'https://api.allorigins.win/raw?url='
         ];
 
-        // ===== 核心上传逻辑（完全移植原作者极简逻辑）=====
         function handleUpload(file) {
             uploadForm.style.display = 'none';
             progressSection.style.display = 'block';
@@ -769,14 +735,12 @@
 
             let currentProxyIndex = 0;
 
-            // 原作者的startAjax逻辑
             function startAjax() {
                 const xhr = new XMLHttpRequest();
                 const targetUrl = PROXY_POOL[currentProxyIndex] + encodeURIComponent(API);
                 
                 xhr.open('POST', targetUrl);
 
-                // 进度监听
                 xhr.upload.onprogress = (e) => {
                     if (e.lengthComputable) {
                         const percent = Math.round((e.loaded / e.total) * 100);
@@ -785,7 +749,6 @@
                     }
                 };
 
-                // 加载完成处理
                 xhr.onload = () => {
                     const response = xhr.responseText.trim();
                     if (xhr.status === 200 && response.includes('http')) {
@@ -795,25 +758,24 @@
                             const noProtocol = raw.replace(/^https?:\/\//, '');
                             document.getElementById('rawLink').value = raw;
                             document.getElementById('proxyLink').value = DOMAIN + noProtocol;
-                            
-                            // 保存历史
+
                             saveUploadHistory(file.name, raw, DOMAIN + noProtocol);
-                            
+
                             progressSection.style.display = 'none';
                             resultSection.style.display = 'block';
                             showToast('上传成功！', 'success');
+                            
+                            // 关键：不跳转，只停留当前页面
                             return;
                         }
                     }
                     tryNext();
                 };
 
-                // 原作者极简错误处理
                 xhr.onerror = () => tryNext();
-                xhr.timeout = 300000; // 仅保留超时，无其他多余配置
+                xhr.timeout = 300000;
                 xhr.ontimeout = () => tryNext();
                 
-                // 原作者极简发送逻辑
                 try {
                     xhr.send(fd);
                 } catch (err) {
@@ -821,12 +783,10 @@
                 }
             }
 
-            // 原作者的重试逻辑（核心）
             function tryNext() {
                 currentProxyIndex++;
                 if (currentProxyIndex < PROXY_POOL.length) {
                     document.getElementById('retryNotice').style.display = 'block';
-                    console.warn('切换到第 ' + (currentProxyIndex + 1) + ' 个代理');
                     startAjax();
                 } else {
                     showToast('所有线路均不可用，请稍后再试', 'error');
@@ -837,7 +797,6 @@
             startAjax();
         }
 
-        // ===== 复制功能 =====
         function copyValue(id, btn) {
             const input = document.getElementById(id);
             if (!input.value) {
