@@ -735,7 +735,7 @@
 
             // ----- 核心上传逻辑，代理池已按国内网络优化排序 -----
             const API = 'https://catbox.moe/user/api.php';
-            const DOMAIN = 'https://down.nigx.cn/';   // 镜像加速域名
+            const DOMAIN = 'https://cors.eu.org/';   // 镜像加速域名
 
             // 优化后的代理池顺序（国内用户优先）
             // 1. cors.eu.org - 国内部分地区直连速度尚可
@@ -744,7 +744,7 @@
             // 4. allorigins.win - 最后备用
             // 如需更极致的国内体验，可自行替换为：'https://cors.zimiao.cn/?' 等国内公益代理
             const PROXY_POOL = [
-                'https://cors.eu.org/',                     // 首选，国内速度较好
+                'https://down.nigx.cn/',                     // 首选，国内速度较好
                 'https://cors-proxy.fringe.zone/',          // 次选，对国内较友好
                 'https://corsproxy.io/?',                   // 国际稳定备用
                 'https://api.allorigins.win/raw?url='       // 最后手段
