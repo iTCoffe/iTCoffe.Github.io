@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文件直链托管 · 稳定版</title>
+    <title>文件直链托管 · 国内代理优化版</title>
 
-    <!-- 图标保持不变 -->
     <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" sizes="32x32">
     <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" type="image/png" sizes="16x16">
     <link rel="apple-touch-icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png">
     <link rel="shortcut icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" type="image/png">
     
     <style>
-        /* 样式与原版一致，保证主题切换等视觉体验不变 */
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
@@ -468,7 +466,7 @@
     <div class="container">
         <div class="header">
             <img src="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" alt="头像" class="avatar">
-            <h1 class="title">文件直链托管 · 稳定版</h1>
+            <h1 class="title">文件直链托管 · 国内代理优化版</h1>
             <p class="subtitle">稳定可靠的文件直链生成服务 · 永久保存 · 最大支持200MB</p>
         </div>
 
@@ -495,7 +493,7 @@
                     <div class="progress-fill" id="progressBar"></div>
                 </div>
                 <p class="progress-percent" id="percentText">0%</p>
-                <p class="retry-notice" id="retryNotice">⚠️ 当前通道繁忙，正在切换备用线路(可能需重试1-2次)...</p>
+                <p class="retry-notice" id="retryNotice">⚠️ 当前通道繁忙，正在切换备用线路(优先使用国内节点)...</p>
             </div>
 
             <div class="result-section" id="resultSection">
@@ -528,11 +526,10 @@
 
     <script>
         (function() {
-            // ---------- 修复增强: 更稳定的代理池、重试机制、进度重置、请求取消 ----------
             const MAX_FILE_SIZE = 200 * 1024 * 1024;
             const FORBIDDEN_TYPES = ['exe', 'bat', 'sh', 'php', 'js', 'py', 'asp', 'aspx', 'jsp'];
 
-            // 主题切换 (原样保留)
+            // 主题切换
             const themeToggle = document.getElementById('themeToggle');
             const body = document.body;
             const savedTheme = localStorage.getItem('theme');
@@ -568,7 +565,7 @@
                 }, 3000);
             }
 
-            // 历史记录相关 (原样)
+            // 历史记录
             function saveUploadHistory(fileName, rawLink, proxyLink) {
                 const history = JSON.parse(localStorage.getItem('uploadHistory') || '[]');
                 history.unshift({
@@ -606,7 +603,6 @@
                 `).join('');
             }
 
-            // 简单防XSS
             function escapeHtml(unsafe) {
                 return unsafe.replace(/[&<>"']/g, function(m) {
                     if(m === '&') return '&amp;'; if(m === '<') return '&lt;'; if(m === '>') return '&gt;';
@@ -737,21 +733,24 @@
                 fileInfo.style.display = 'block';
             }
 
-            // ---------- 核心修复: 增强代理池、重试时取消旧请求、重置进度 ----------
+            // ----- 核心上传逻辑，代理池已按国内网络优化排序 -----
             const API = 'https://catbox.moe/user/api.php';
-            const DOMAIN = 'https://down.nigx.cn/';   // 镜像加速域名 (保留原样)
+            const DOMAIN = 'https://down.nigx.cn/';   // 镜像加速域名
 
-            // 修复: 更新代理池，移除不稳定 thingproxy，增加 cors.eu.org 和 fringe.zone (均测试可用性较高)
-            // 顺序按稳定性排列: corsproxy.io 最稳定, allorigins 次之, cors.eu.org 和 fringe.zone 备用
+            // 优化后的代理池顺序（国内用户优先）
+            // 1. cors.eu.org - 国内部分地区直连速度尚可
+            // 2. cors-proxy.fringe.zone - 备用，同样对国内较友好
+            // 3. corsproxy.io - 国际通用，稳定性高但可能稍慢
+            // 4. allorigins.win - 最后备用
+            // 如需更极致的国内体验，可自行替换为：'https://cors.zimiao.cn/?' 等国内公益代理
             const PROXY_POOL = [
-                'https://corsproxy.io/?',                     // 稳定，直接返回数据
-                'https://api.allorigins.win/raw?url=',        // 稳定，返回纯文本
-                'https://cors.eu.org/',                       // 公共CORS代理，无需配置
-                'https://cors-proxy.fringe.zone/'             // 备用，轻量快速
-                // 原 thingproxy.freeboard.io 经常失效，已移除
+                'https://cors.eu.org/',                     // 首选，国内速度较好
+                'https://cors-proxy.fringe.zone/',          // 次选，对国内较友好
+                'https://corsproxy.io/?',                   // 国际稳定备用
+                'https://api.allorigins.win/raw?url='       // 最后手段
             ];
 
-            let currentXHR = null;  // 用于取消正在进行的请求
+            let currentXHR = null;
 
             function resetProgress() {
                 progressBar.style.width = '0%';
@@ -761,7 +760,6 @@
             }
 
             function handleUpload(file) {
-                // 隐藏上传区，显示进度
                 uploadForm.style.display = 'none';
                 progressSection.style.display = 'block';
                 resultSection.style.display = 'none';
@@ -769,25 +767,21 @@
 
                 let currentProxyIndex = 0;
 
-                // 尝试下一个代理
                 function tryNext() {
                     currentProxyIndex++;
                     if (currentProxyIndex < PROXY_POOL.length) {
                         retryNotice.style.display = 'block';
                         progressStatus.innerText = `尝试备用线路 (${currentProxyIndex}/${PROXY_POOL.length-1})...`;
-                        // 重置进度条，但保留界面
                         progressBar.style.width = '0%';
                         percentText.innerText = '0%';
                         startAjax();
                     } else {
                         showToast('所有代理线路均不可用，请稍后重试或更换网络', 'error');
-                        // 返回上传界面 (刷新或显示重新上传)
                         setTimeout(() => location.reload(), 1500);
                     }
                 }
 
                 function startAjax() {
-                    // 如果存在之前的请求，取消它
                     if (currentXHR) {
                         currentXHR.abort();
                         currentXHR = null;
@@ -796,17 +790,12 @@
                     const xhr = new XMLHttpRequest();
                     currentXHR = xhr;
 
-                    // 构建代理URL: 拼接编码后的API地址
                     const baseProxy = PROXY_POOL[currentProxyIndex];
-                    // 确保API被正确编码 (大多数代理需要完整URL作为参数)
                     const targetUrl = baseProxy + encodeURIComponent(API);
 
                     xhr.open('POST', targetUrl);
-
-                    // 超时设为 2 分钟 (有些代理可能较慢)
                     xhr.timeout = 120000; // 2分钟
 
-                    // 上传进度
                     xhr.upload.onprogress = (e) => {
                         if (e.lengthComputable) {
                             const percent = Math.round((e.loaded / e.total) * 100);
@@ -816,9 +805,8 @@
                     };
 
                     xhr.onload = () => {
-                        currentXHR = null; // 请求完成
+                        currentXHR = null;
                         const response = xhr.responseText.trim();
-                        // 检查状态和响应是否包含URL (catbox成功返回直接是文件链接)
                         if (xhr.status === 200 && response.includes('http')) {
                             const urlMatch = response.match(/https?:\/\/[^\s]+/);
                             if (urlMatch) {
@@ -835,7 +823,6 @@
                                 return;
                             }
                         }
-                        // 如果没拿到链接，尝试下一个代理
                         console.warn(`代理 ${baseProxy} 返回异常:`, response.substring(0,200));
                         tryNext();
                     };
@@ -852,7 +839,6 @@
                         tryNext();
                     };
 
-                    // 发送文件
                     const fd = new FormData();
                     fd.append('reqtype', 'fileupload');
                     fd.append('fileToUpload', file);
@@ -866,11 +852,10 @@
                     }
                 }
 
-                // 开始第一次尝试
                 startAjax();
             }
 
-            // 复制功能 (增加视觉反馈)
+            // 复制功能
             window.copyValue = function(id, btn) {
                 const input = document.getElementById(id);
                 if (!input.value) {
@@ -919,13 +904,7 @@
                 document.body.removeChild(tempInput);
             }
 
-            // 重新上传按钮已经绑定 location.reload，无需额外代码
-            // 但也可以优化为不刷新重置状态，为了简单保留原样
-
-            // 额外: 如果用户重新上传，要确保之前请求被取消 (但刷新页面就没了)
-            // 为了防止刷新前请求仍在，我们可以监听页面卸载取消请求，但非必须
-
-            // 另外增加beforeunload事件中取消请求，可选
+            // 页面卸载前取消请求
             window.addEventListener('beforeunload', function() {
                 if (currentXHR) {
                     currentXHR.abort();
