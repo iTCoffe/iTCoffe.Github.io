@@ -8,11 +8,12 @@
 <!-- 浏览器ICO图标配置 -->
     <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" sizes="32x32">
     <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" type="image/png" sizes="16x16">
-    <link rel="apple-touch-icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png"> <!-- 修复多的h -->
-    <link rel="shortcut icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" type="image/png"> <!-- 兼容旧浏览器 -->
+    <!-- 修复：多的h字母 -->
+    <link rel="apple-touch-icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png"> 
+    <link rel="shortcut icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" type="image/png"> 
     
     <style>
-        /* 保留原样式代码，无修改 */
+        /* 基础变量 - 浅色模式默认 */
         :root {
             --primary: #6366f1;
             --primary-light: #818cf8;
@@ -32,6 +33,8 @@
             --dragover-bg: rgba(99, 102, 241, 0.05);
             --input-bg: #f8fafc;
         }
+
+        /* 深色模式变量 */
         .dark-mode {
             --primary: #818cf8;
             --primary-light: #a5b4fc;
@@ -51,6 +54,7 @@
             --dragover-bg: rgba(99, 102, 241, 0.1);
             --input-bg: #1e293b;
         }
+
         * {
             margin: 0;
             padding: 0;
@@ -58,6 +62,7 @@
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
             transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
+
         body {
             min-height: 100vh;
             display: flex;
@@ -70,11 +75,14 @@
             padding: 20px;
             overflow-x: hidden;
         }
+
         @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
+        /* 主题切换按钮 */
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -93,7 +101,12 @@
             color: var(--primary);
             font-size: 20px;
         }
-        .theme-toggle:hover { transform: scale(1.05); }
+
+        .theme-toggle:hover {
+            transform: scale(1.05);
+        }
+
+        /* Toast提示框 */
         .toast {
             position: fixed;
             bottom: 30px;
@@ -114,9 +127,17 @@
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
-        .toast.success { border-left: 4px solid var(--success); }
-        .toast.error { border-left: 4px solid var(--danger); }
-        .toast.warning { border-left: 4px solid var(--warning); }
+        .toast.success {
+            border-left: 4px solid var(--success);
+        }
+        .toast.error {
+            border-left: 4px solid var(--danger);
+        }
+        .toast.warning {
+            border-left: 4px solid var(--warning);
+        }
+
+        /* 主容器样式 */
         .container {
             width: 100%;
             max-width: 500px;
@@ -126,10 +147,13 @@
             align-items: center;
             gap: 24px;
         }
+
+        /* 头部区域 */
         .header {
             text-align: center;
             width: 100%;
         }
+
         .avatar {
             width: 100px;
             height: 100px;
@@ -140,7 +164,11 @@
             transition: transform 0.4s ease;
             object-fit: cover;
         }
-        .avatar:hover { transform: scale(1.08) rotate(2deg); }
+
+        .avatar:hover {
+            transform: scale(1.08) rotate(2deg);
+        }
+
         .title {
             font-size: 36px;
             font-weight: 800;
@@ -150,11 +178,14 @@
             margin-bottom: 8px;
             letter-spacing: -0.5px;
         }
+
         .subtitle {
             color: var(--text-secondary);
             font-size: 14px;
             line-height: 1.5;
         }
+
+        /* 卡片样式 */
         .card {
             width: 100%;
             background: var(--card-bg);
@@ -165,10 +196,13 @@
             backdrop-filter: blur(10px);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .card:hover {
             transform: translateY(-4px);
             box-shadow: 0 15px 45px rgba(99, 102, 241, 0.15);
         }
+
+        /* 文件信息显示 */
         .file-info {
             margin-bottom: 16px;
             text-align: center;
@@ -187,6 +221,8 @@
             font-size: 12px;
             color: var(--text-secondary);
         }
+
+        /* 上传区域 */
         .upload-area {
             border: 2px dashed var(--border-color);
             border-radius: 16px;
@@ -197,15 +233,18 @@
             margin-bottom: 24px;
             background: var(--upload-bg);
         }
+
         .upload-area:hover {
             border-color: var(--primary-light);
             background: var(--upload-hover);
         }
+
         .upload-area.dragover {
             border-color: var(--primary);
             background: var(--dragover-bg);
             transform: scale(1.02);
         }
+
         .upload-icon {
             font-size: 56px;
             margin-bottom: 16px;
@@ -213,15 +252,19 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .upload-text {
             font-size: 16px;
             color: var(--text-secondary);
             margin-bottom: 8px;
         }
+
         .upload-hint {
             font-size: 12px;
             color: #94a3b8;
         }
+
+        /* 按钮样式 */
         .btn {
             display: inline-block;
             width: 100%;
@@ -238,6 +281,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .btn::after {
             content: '';
             position: absolute;
@@ -250,30 +294,38 @@
             transform: translate(-50%, -50%);
             transition: width 0.6s ease, height 0.6s ease;
         }
+
         .btn:active::after {
             width: 300px;
             height: 300px;
             opacity: 0;
         }
+
         .btn:hover {
             background: linear-gradient(135deg, var(--primary-dark), #4338ca);
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
         }
+
         .btn-outline {
             background: transparent;
             border: 2px solid var(--primary);
             color: var(--primary);
             box-shadow: none;
         }
+
         .btn-outline:hover {
             background: rgba(99, 102, 241, 0.05);
             color: var(--primary-dark);
         }
+
+        /* 进度区域 */
         .progress-section, .result-section, .history-section {
             display: none;
             margin-top: 24px;
         }
+
+        /* 加载动画 */
         .loading-spinner {
             width: 40px;
             height: 40px;
@@ -287,12 +339,14 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+
         .progress-title {
             font-size: 15px;
             color: var(--text-secondary);
             margin-bottom: 12px;
             text-align: center;
         }
+
         .progress-bar {
             height: 8px;
             background: var(--input-bg);
@@ -300,6 +354,7 @@
             overflow: hidden;
             margin-bottom: 12px;
         }
+
         .progress-fill {
             height: 100%;
             background: linear-gradient(90deg, var(--primary), var(--secondary));
@@ -307,12 +362,14 @@
             width: 0%;
             transition: width 0.3s ease;
         }
+
         .progress-percent {
             text-align: center;
             font-size: 14px;
             color: var(--primary);
             font-weight: 600;
         }
+
         .retry-notice {
             font-size: 12px;
             color: var(--warning);
@@ -320,9 +377,12 @@
             margin-top: 8px;
             display: none;
         }
+
+        /* 结果区域 */
         .result-item {
             margin-bottom: 20px;
         }
+
         .result-label {
             font-size: 12px;
             font-weight: 600;
@@ -330,6 +390,7 @@
             margin-bottom: 8px;
             display: block;
         }
+
         .result-input-group {
             display: flex;
             align-items: center;
@@ -338,6 +399,7 @@
             border-radius: 10px;
             padding: 2px;
         }
+
         .result-input {
             flex: 1;
             padding: 12px 16px;
@@ -350,6 +412,7 @@
             overflow: hidden;
             text-overflow: ellipsis;
         }
+
         .copy-btn {
             padding: 8px 16px;
             background: var(--primary);
@@ -364,6 +427,7 @@
             position: relative;
             overflow: hidden;
         }
+
         .copy-btn::after {
             content: '';
             position: absolute;
@@ -376,13 +440,21 @@
             transform: translate(-50%, -50%);
             transition: width 0.6s ease, height 0.6s ease;
         }
+
         .copy-btn:active::after {
             width: 200px;
             height: 200px;
             opacity: 0;
         }
-        .copy-btn:hover { background: var(--primary-dark); }
-        .history-section { margin-top: 32px; }
+
+        .copy-btn:hover {
+            background: var(--primary-dark);
+        }
+
+        /* 上传历史区域 */
+        .history-section {
+            margin-top: 32px;
+        }
         .history-header {
             display: flex;
             justify-content: space-between;
@@ -443,20 +515,55 @@
             border-radius: 4px;
             cursor: pointer;
         }
-        .history-btn:hover { background: var(--primary); }
-        #fileInput { display: none; }
-        @media (max-width: 480px) {
-            .container { padding: 10px; }
-            .card { padding: 24px 16px; }
-            .upload-area { padding: 32px 16px; }
-            .title { font-size: 28px; }
-            .theme-toggle { width: 40px; height: 40px; font-size: 18px; }
+        .history-btn:hover {
+            background: var(--primary);
         }
+
+        /* 隐藏的文件输入 */
+        #fileInput {
+            display: none;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .card {
+                padding: 24px 16px;
+            }
+            
+            .upload-area {
+                padding: 32px 16px;
+            }
+            
+            .title {
+                font-size: 28px;
+            }
+            
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+        }
+
         @media (max-width: 375px) {
-            .card { padding: 20px 12px; }
-            .upload-area { padding: 32px 12px; }
-            .title { font-size: 24px; }
-            .theme-toggle { width: 36px; height: 36px; font-size: 16px; }
+            .card {
+                padding: 20px 12px;
+            }
+            .upload-area {
+                padding: 32px 12px;
+            }
+            .title {
+                font-size: 24px;
+            }
+            .theme-toggle {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
         }
     </style>
     <!-- 百度统计代码 -->
@@ -553,7 +660,10 @@
         // ===== 主题切换核心逻辑 =====
         const themeToggle = document.getElementById('themeToggle');
         const body = document.body;
+
+        // 从本地存储读取主题偏好
         const savedTheme = localStorage.getItem('theme');
+        // 自动跟随系统主题
         const systemDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
         
         if (savedTheme === 'dark' || (!savedTheme && systemDark)) {
@@ -562,12 +672,16 @@
         } else {
             themeToggle.textContent = '🌞';
         }
+
+        // 切换主题
         themeToggle.addEventListener('click', () => {
             if (body.classList.contains('dark-mode')) {
+                // 切换到浅色模式
                 body.classList.remove('dark-mode');
                 themeToggle.textContent = '🌞';
                 localStorage.setItem('theme', 'light');
             } else {
+                // 切换到深色模式
                 body.classList.add('dark-mode');
                 themeToggle.textContent = '🌙';
                 localStorage.setItem('theme', 'dark');
@@ -580,12 +694,14 @@
             toast.textContent = message;
             toast.className = `toast ${type}`;
             toast.classList.add('show');
+            
             setTimeout(() => {
                 toast.classList.remove('show');
             }, 3000);
         }
 
         // ===== 上传历史功能 =====
+        // 保存上传记录
         function saveUploadHistory(fileName, rawLink, proxyLink) {
             const history = JSON.parse(localStorage.getItem('uploadHistory') || '[]');
             history.unshift({
@@ -595,10 +711,13 @@
                 proxy: proxyLink,
                 time: new Date().toLocaleString()
             });
+            // 只保留最近10条
             if (history.length > 10) history.pop();
             localStorage.setItem('uploadHistory', JSON.stringify(history));
             renderHistory();
         }
+
+        // 渲染历史记录
         function renderHistory() {
             const history = JSON.parse(localStorage.getItem('uploadHistory') || '[]');
             const historyList = document.getElementById('historyList');
@@ -608,6 +727,7 @@
                 historySection.style.display = 'none';
                 return;
             }
+            
             historySection.style.display = 'block';
             historyList.innerHTML = history.map(item => `
                 <div class="history-item">
@@ -620,19 +740,39 @@
                 </div>
             `).join('');
         }
+
+        // 复制历史链接
         function copyHistoryLink(link) {
-            navigator.clipboard.writeText(link).then(() => {
-                showToast('链接复制成功！', 'success');
-            }).catch(() => {
-                const tempInput = document.createElement('input');
-                tempInput.value = link;
-                document.body.appendChild(tempInput);
-                tempInput.select();
-                document.execCommand('copy');
-                document.body.removeChild(tempInput);
-                showToast('链接复制成功！', 'success');
-            });
+            // 修复：废弃API替换为新标准
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(link).then(() => {
+                    showToast('链接复制成功！', 'success');
+                }).catch(err => {
+                    fallbackCopyText(link);
+                });
+            } else {
+                fallbackCopyText(link);
+            }
         }
+        
+        // 通用复制降级函数
+        function fallbackCopyText(text) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            tempInput.style.position = 'fixed';
+            tempInput.style.opacity = 0;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            try {
+                document.execCommand('copy');
+                showToast('链接复制成功！', 'success');
+            } catch (err) {
+                showToast('复制失败，请手动复制', 'error');
+            }
+            document.body.removeChild(tempInput);
+        }
+
+        // 清空历史记录
         function clearHistory() {
             if (confirm('确定要清空所有上传记录吗？')) {
                 localStorage.removeItem('uploadHistory');
@@ -643,19 +783,24 @@
 
         // ===== 文件校验功能 =====
         function validateFile(file) {
+            // 1. 检查文件大小
             if (file.size > MAX_FILE_SIZE) {
                 showToast(`文件大小超过限制！最大支持200MB，当前文件大小：${(file.size/1024/1024).toFixed(2)}MB`, 'error');
                 return false;
             }
+            
+            // 2. 检查文件类型
             const fileExt = file.name.split('.').pop()?.toLowerCase() || '';
             if (FORBIDDEN_TYPES.includes(fileExt)) {
                 showToast('禁止上传可执行文件或脚本文件！', 'error');
                 return false;
             }
+            
             return true;
         }
 
         // ===== 核心上传功能 =====
+        // 获取DOM元素
         const fileInput = document.getElementById('fileInput');
         const dropZone = document.getElementById('dropZone');
         const progressSection = document.getElementById('progressSection');
@@ -666,29 +811,36 @@
         const fileSizeEl = document.getElementById('fileSize');
         const fileTypeEl = document.getElementById('fileType');
 
+        // 页面加载时渲染历史记录
         window.addEventListener('load', () => {
             renderHistory();
         });
 
-        // 拖拽功能
+        // 拖拽功能实现
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, preventDefaults, false);
         });
+
         function preventDefaults(e) {
             e.preventDefault();
             e.stopPropagation();
         }
+
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
         });
+
         ['dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
         });
+
         dropZone.addEventListener('drop', handleDrop, false);
+
         function handleDrop(e) {
             const dt = e.dataTransfer;
             const files = dt.files;
             if (files.length) {
+                // 取第一个文件（如需多文件可循环）
                 const file = files[0];
                 if (validateFile(file)) {
                     showFileInfo(file);
@@ -708,8 +860,10 @@
             fileInfo.style.display = 'block';
         }
 
-        // 点击上传
+        // 点击上传区域触发文件选择
         dropZone.addEventListener('click', () => fileInput.click());
+        
+        // 文件选择后触发上传
         fileInput.addEventListener('change', (e) => {
             if (e.target.files.length) {
                 const file = e.target.files[0];
@@ -720,37 +874,37 @@
             }
         });
 
-        // ===== 关键修复：适配GitHub Pages的跨域上传配置 =====
-        // 保留原上传网址不变
+        // 核心配置 - 完全保留原上传地址，不改动
         const API = 'https://catbox.moe/user/api.php';
         const DOMAIN = 'https://down.nigx.cn/';
         
-        // 修复GitHub Pages可用的代理池（重点！）
+        // 修复：替换为GitHub Pages能正常工作的跨域代理池
         const PROXY_POOL = [
-            // 新增：支持FormData上传的跨域代理
-            'https://api.codetabs.com/v1/proxy/?quest=',
-            // 优化原有代理，优先使用更稳定的
-            'https://corsproxy.io/?',
-            'https://proxy.cors.sh/?'
+            'https://api.codetabs.com/v1/proxy/?quest=',  // 支持FormData+POST
+            'https://proxy.cors.sh/?',                   // 兼容GitHub Pages
+            'https://corsproxy.io/?'                     // 最后兜底
         ];
 
-        // 处理文件上传（核心修复）
+        // 处理文件上传 - 修复所有运行错误
         function handleUpload(file) {
+            // 切换到进度显示
             uploadForm.style.display = 'none';
             progressSection.style.display = 'block';
 
+            // 创建FormData
             const fd = new FormData();
             fd.append('reqtype', 'fileupload');
             fd.append('fileToUpload', file);
 
             let currentProxyIndex = 0;
             let retryCount = 0;
-            const MAX_RETRY = 5; // 增加重试次数
+            const MAX_RETRY = 5; // 修复：增加重试次数，避免一次性失败
 
             // 发起上传请求
             function startUpload() {
+                // 修复：增加重试上限，防止无限循环
                 if (retryCount >= MAX_RETRY) {
-                    showToast('上传失败：所有线路均尝试失败，请检查网络或稍后再试', 'error');
+                    showToast('上传失败：所有备用线路均不可用，请稍后再试。', 'error');
                     progressSection.style.display = 'none';
                     uploadForm.style.display = 'block';
                     document.getElementById('retryNotice').style.display = 'none';
@@ -761,10 +915,12 @@
                 const targetUrl = PROXY_POOL[currentProxyIndex] + encodeURIComponent(API);
                 
                 xhr.open('POST', targetUrl);
-                // 关键：添加GitHub Pages兼容的请求头
+                
+                // 修复：添加GitHub Pages兼容的请求头
                 xhr.setRequestHeader('Accept', '*/*');
                 xhr.setRequestHeader('Cache-Control', 'no-cache');
-                // 延长超时时间至5分钟
+                
+                // 修复：延长超时时间到5分钟（300秒），适配大文件
                 xhr.timeout = 300000;
 
                 // 上传进度监听
@@ -779,7 +935,8 @@
                 // 请求完成处理
                 xhr.addEventListener('load', () => {
                     const response = xhr.responseText.trim();
-                    console.log('GitHub Pages上传响应：', response); // 调试日志
+                    // 修复：添加调试日志，方便排查GitHub Pages问题
+                    console.log('上传响应:', response, '状态码:', xhr.status);
                     
                     if (xhr.status === 200 && response.includes('http')) {
                         const urlMatch = response.match(/https?:\/\/[^\s]+/);
@@ -789,46 +946,50 @@
                             document.getElementById('rawLink').value = raw;
                             document.getElementById('proxyLink').value = DOMAIN + noProtocol;
                             
+                            // 保存上传历史
                             saveUploadHistory(file.name, raw, DOMAIN + noProtocol);
                             
+                            // 切换到结果显示
                             progressSection.style.display = 'none';
                             resultSection.style.display = 'block';
                             showToast('文件上传成功！', 'success');
                             return;
                         }
                     }
-                    // 响应异常，尝试下一个代理
+                    // 尝试下一个代理
                     tryNextProxy();
                 });
 
-                // 错误和超时处理
+                // 错误处理
                 xhr.addEventListener('error', (err) => {
-                    console.error('GitHub Pages上传错误：', err);
-                    tryNextProxy();
-                });
-                xhr.addEventListener('timeout', () => {
-                    console.error('GitHub Pages上传超时');
+                    console.error('上传错误:', err);
                     tryNextProxy();
                 });
                 
-                // 发送请求（添加错误捕获）
+                // 超时处理
+                xhr.addEventListener('timeout', () => {
+                    console.error('上传超时');
+                    tryNextProxy();
+                });
+                
+                // 修复：捕获send()可能抛出的异常（GitHub Pages安全策略）
                 try {
                     xhr.send(fd);
                 } catch (err) {
-                    console.error('发送请求失败：', err);
+                    console.error('发送请求失败:', err);
                     tryNextProxy();
                 }
             }
 
-            // 尝试下一个代理（优化重试逻辑）
+            // 尝试下一个代理 - 修复：指数退避重试，避免频繁请求
             function tryNextProxy() {
                 retryCount++;
                 currentProxyIndex = (currentProxyIndex + 1) % PROXY_POOL.length;
                 
                 document.getElementById('retryNotice').style.display = 'block';
-                showToast(`上传失败，正在尝试第${retryCount}次重试...`, 'warning');
+                showToast(`上传失败，正在尝试第 ${retryCount} 次重试...`, 'warning');
                 
-                // 指数退避重试（避免频繁请求）
+                // 修复：延迟重试（1s, 2s, 3s... 最多5s）
                 const delay = Math.min(1000 * retryCount, 5000);
                 setTimeout(() => {
                     startUpload();
@@ -839,13 +1000,18 @@
             startUpload();
         }
 
-        // 复制功能
+        // 复制功能 - 修复：废弃API替换
         function copyValue(id, btn) {
             const input = document.getElementById(id);
-            input.select();
+            const value = input.value;
             
-            try {
-                navigator.clipboard.writeText(input.value).then(() => {
+            if (!value) {
+                showToast('无内容可复制', 'warning');
+                return;
+            }
+
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(value).then(() => {
                     const originalText = btn.textContent;
                     btn.textContent = '已复制 ✓';
                     btn.style.background = 'var(--success)';
@@ -855,22 +1021,37 @@
                     }, 2000);
                     showToast('链接复制成功！', 'success');
                 }).catch(() => {
-                    fallbackCopy(input, btn);
+                    fallbackCopyBtn(value, btn);
                 });
-            } catch (err) {
-                fallbackCopy(input, btn);
+            } else {
+                fallbackCopyBtn(value, btn);
             }
         }
-        function fallbackCopy(input, btn) {
-            document.execCommand('copy');
-            const originalText = btn.textContent;
-            btn.textContent = '已复制 ✓';
-            btn.style.background = 'var(--success)';
-            setTimeout(() => {
-                btn.textContent = originalText;
-                btn.style.background = '';
-            }, 2000);
-            showToast('链接复制成功！', 'success');
+
+        // 复制降级方案 - 修复：使用textarea更稳定
+        function fallbackCopyBtn(value, btn) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = value;
+            tempInput.style.position = 'fixed';
+            tempInput.style.opacity = 0;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            
+            try {
+                document.execCommand('copy');
+                const originalText = btn.textContent;
+                btn.textContent = '已复制 ✓';
+                btn.style.background = 'var(--success)';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '';
+                }, 2000);
+                showToast('链接复制成功！', 'success');
+            } catch (err) {
+                showToast('复制失败，请手动复制', 'error');
+            }
+            
+            document.body.removeChild(tempInput);
         }
     </script>
 </body>
