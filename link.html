@@ -768,14 +768,15 @@
 
             // ----- 融合后的上传逻辑：多线路故障转移（带节点名称）-----
             const API = 'https://catbox.moe/user/api.php';
-            const DOMAIN = 'https://cors.ifanr.pp.ua/?target=';   // 镜像加速域名
+            const DOMAIN = 'https://cors.ifanr.pp.ua/;   // 镜像加速域名
 
             // 优化后的节点池（国内用户优先），包含友好名称
             const CDN_POOL = [
-                { name: '线路 1 (国内优化)', url: 'https://cors.eu.org/' },
-                { name: '线路 2 (国内优化)', url: 'https://cors-proxy.fringe.zone/' },
-                { name: '线路 3 (国际备用)', url: 'https://corsproxy.io/?' },
-                { name: '线路 4 (最后手段)', url: 'https://api.allorigins.win/raw?url=' }
+                { name: '线路 1 (国内优化)', url: 'https://cors.ifanr.pp.ua/ },
+                { name: '线路 2 (国内优化)', url: 'https://cors.eu.org/' },
+                { name: '线路 3 (国内优化)', url: 'https://cors-proxy.fringe.zone/' },
+                { name: '线路 4 (国际备用)', url: 'https://corsproxy.io/?' },
+                { name: '线路 5 (最后手段)', url: 'https://api.allorigins.win/raw?url=' }
             ];
 
             let currentXHR = null;
