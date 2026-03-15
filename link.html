@@ -477,13 +477,16 @@
             </div>
 
             <div id="uploadForm">
-                <div class="upload-area" id="dropZone">
-                    <div class="upload-icon">🔗</div>
-                    <p class="upload-text">点击或将文件拖拽至此处上传</p>
-                    <p class="upload-hint">支持任意格式文件 · 最大200MB · 永久保存</p>
-                    <input type="file" id="fileInput" hidden multiple>
+                <div class="upload-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                    <div style="font-size: 40px;">📂</div>
+                    <p style="font-size: 14px; font-weight: 600; margin-top: 8px;">点击或拖拽上传</p>
+                    <div class="upload-info">
+                        ✅ 不限格式 · 📦 200MB内<br>
+                        ☁️ 永久储存 · ⚡ 加速通道
+                    </div>
+                    <input type="file" id="fileInput" hidden>
                 </div>
-                <button class="btn" onclick="document.getElementById('fileInput').click()">开始上传文件</button>
+                <button class="btn" onclick="document.getElementById('fileInput').click()">立即上传文件</button>
             </div>
 
             <div class="progress-section" id="progressSection">
