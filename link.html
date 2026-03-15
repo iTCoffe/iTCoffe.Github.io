@@ -766,16 +766,16 @@
                 fileInfo.style.display = 'block';
             }
 
-            // ----- 核心上传逻辑，代理池已按国内网络优化排序 -----
+            // ----- 融合后的上传逻辑：多线路故障转移（带节点名称）-----
             const API = 'https://catbox.moe/user/api.php';
             const DOMAIN = 'https://cors.ifanr.pp.ua/';   // 镜像加速域名
 
-            // 优化后的代理池顺序（国内用户优先）
-            const PROXY_POOL = [
-                'https://cors.eu.org/',                     // 首选，国内速度较好
-                'https://cors-proxy.fringe.zone/',          // 次选，对国内较友好
-                'https://corsproxy.io/?',                   // 国际稳定备用
-                'https://api.allorigins.win/raw?url='       // 最后手段
+            // 优化后的节点池（国内用户优先），包含友好名称
+            const CDN_POOL = [
+                { name: '线路 1 (国内优化)', url: 'https://cors.eu.org/' },
+                { name: '线路 2 (国内优化)', url: 'https://cors-proxy.fringe.zone/' },
+                { name: '线路 3 (国际备用)', url: 'https://corsproxy.io/?' },
+                { name: '线路 4 (最后手段)', url: 'https://api.allorigins.win/raw?url=' }
             ];
 
             let currentXHR = null;
@@ -793,36 +793,14 @@
                 resultSection.style.display = 'none';
                 resetProgress();
 
-                let currentProxyIndex = 0;
-
-                function tryNext() {
-                    currentProxyIndex++;
-                    if (currentProxyIndex < PROXY_POOL.length) {
-                        retryNotice.style.display = 'block';
-                        progressStatus.innerText = `尝试备用线路 (${currentProxyIndex}/${PROXY_POOL.length-1})...`;
-                        progressBar.style.width = '0%';
-                        percentText.innerText = '0%';
-                        startAjax();
-                    } else {
-                        showToast('所有代理线路均不可用，请稍后重试或更换网络', 'error');
-                        setTimeout(() => location.reload(), 1500);
-                    }
-                }
-
-                function startAjax() {
-                    if (currentXHR) {
-                        currentXHR.abort();
-                        currentXHR = null;
-                    }
-
+                // 封装单个上传任务为 Promise
+                const uploadTask = (cdn) => new Promise((resolve, reject) => {
                     const xhr = new XMLHttpRequest();
-                    currentXHR = xhr;
+                    currentXHR = xhr; // 保存以便页面卸载时取消
 
-                    const baseProxy = PROXY_POOL[currentProxyIndex];
-                    const targetUrl = baseProxy + encodeURIComponent(API);
-
+                    const targetUrl = cdn.url + encodeURIComponent(API);
                     xhr.open('POST', targetUrl);
-                    xhr.timeout = 120000; // 2分钟
+                    xhr.timeout = 60000; // 60秒超时（适合大文件）
 
                     xhr.upload.onprogress = (e) => {
                         if (e.lengthComputable) {
@@ -838,33 +816,23 @@
                         if (xhr.status === 200 && response.includes('http')) {
                             const urlMatch = response.match(/https?:\/\/[^\s]+/);
                             if (urlMatch) {
-                                const raw = urlMatch[0];
-                                const noProtocol = raw.replace(/^https?:\/\//, '');
-                                document.getElementById('rawLink').value = raw;
-                                document.getElementById('proxyLink').value = DOMAIN + noProtocol;
-
-                                saveUploadHistory(file.name, raw, DOMAIN + noProtocol);
-
-                                progressSection.style.display = 'none';
-                                resultSection.style.display = 'block';
-                                showToast('上传成功！', 'success');
-                                return;
+                                resolve(urlMatch[0]);
+                            } else {
+                                reject(new Error('响应中没有找到链接'));
                             }
+                        } else {
+                            reject(new Error(`HTTP ${xhr.status}`));
                         }
-                        console.warn(`代理 ${baseProxy} 返回异常:`, response.substring(0,200));
-                        tryNext();
                     };
 
                     xhr.onerror = () => {
                         currentXHR = null;
-                        console.error(`代理 ${baseProxy} 网络错误`);
-                        tryNext();
+                        reject(new Error('网络错误'));
                     };
 
                     xhr.ontimeout = () => {
                         currentXHR = null;
-                        console.warn(`代理 ${baseProxy} 超时`);
-                        tryNext();
+                        reject(new Error('超时'));
                     };
 
                     const fd = new FormData();
@@ -875,12 +843,43 @@
                         xhr.send(fd);
                     } catch (err) {
                         currentXHR = null;
-                        console.error('send error', err);
-                        tryNext();
+                        reject(err);
                     }
-                }
+                });
 
-                startAjax();
+                // 显示上传结果
+                const showResult = (rawUrl) => {
+                    const noProtocol = rawUrl.replace(/^https?:\/\//, '');
+                    document.getElementById('rawLink').value = rawUrl;
+                    document.getElementById('proxyLink').value = DOMAIN + noProtocol;
+
+                    saveUploadHistory(file.name, rawUrl, DOMAIN + noProtocol);
+
+                    progressSection.style.display = 'none';
+                    resultSection.style.display = 'block';
+                    showToast('上传成功！', 'success');
+                };
+
+                // 故障转移循环
+                (async () => {
+                    for (const [index, cdn] of CDN_POOL.entries()) {
+                        try {
+                            progressStatus.innerText = `正在通过 ${cdn.name} 上传...`;
+                            if (index > 0) {
+                                retryNotice.style.display = 'block'; // 从第二个开始显示切换提示
+                            }
+                            const rawUrl = await uploadTask(cdn);
+                            showResult(rawUrl);
+                            return; // 成功则退出
+                        } catch (err) {
+                            console.warn(`节点 ${cdn.name} 失败:`, err.message);
+                            // 继续尝试下一个节点
+                        }
+                    }
+                    // 所有节点均失败
+                    showToast('所有代理线路均不可用，请稍后重试或更换网络', 'error');
+                    setTimeout(() => location.reload(), 1500);
+                })();
             }
 
             // 复制功能
