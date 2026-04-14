@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>草泥馬免费TG代理 · 极光集群</title>
+    <link rel="icon" type="image/png" href="https://iTCoffe.GitHub.io/Loong/Nekogram.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        tgblue: '#0088cc',
+                        tgalternate: '#00fbff',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root { --transition-speed: 0.3s; }
+        body { 
+            transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+            overflow-x: hidden;
+        }
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        
+        /* 玻璃卡片 + 精致动效 */
+        .glass-card {
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .proxy-node { 
+            transition: all 0.3s ease; 
+        }
+        .proxy-node:hover { 
+            transform: scale(1.02); 
+            background: rgba(0, 136, 204, 0.1); 
+        }
+        #toast {
+            transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        
+        /* 精致图标容器特效：渐变光晕 + 悬浮升华 */
+        .icon-glow-container {
+            transition: all 0.4s cubic-bezier(0.2, 0.9, 0.4, 1.2);
+            box-shadow: 0 8px 20px -6px rgba(0,136,204,0.25);
+        }
+        .icon-glow-container:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 18px 30px -8px rgba(0,136,204,0.45);
+        }
+        .tg-icon-super {
+            filter: drop-shadow(0 4px 8px rgba(0,136,204,0.3));
+            transition: all 0.3s ease;
+        }
+        .icon-glow-container:hover .tg-icon-super {
+            filter: drop-shadow(0 6px 14px rgba(0,136,204,0.6));
+            transform: scale(1.02) rotate(2deg);
+        }
+        
+        /* 装饰性微光 (非跳动，仅静态优雅) */
+        .soft-radial {
+            background: radial-gradient(circle at 30% 20%, rgba(0,136,204,0.08), transparent 70%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-white min-h-screen py-12 px-6 flex flex-col items-center relative">
+    
+    <!-- 静态优雅微光背景 (纯装饰，无干扰) -->
+    <div class="fixed inset-0 pointer-events-none soft-radial opacity-40 dark:opacity-20"></div>
+
+    <!-- 主题切换按钮 (精致悬浮) -->
+    <button id="theme-toggle" onclick="toggleTheme()" class="fixed top-6 right-6 z-50 w-12 h-12 rounded-full bg-white/80 dark:bg-black/50 border border-slate-200 dark:border-white/20 flex items-center justify-center shadow-lg hover:scale-110 active:scale-90 transition-all backdrop-blur-md">
+        <i class="fas fa-sun text-yellow-500 text-xl hidden dark:block"></i>
+        <i class="fas fa-moon text-indigo-400 text-xl dark:hidden"></i>
+    </button>
+
+    <div class="relative z-10 w-full max-w-xl">
+        <!-- 头部标识区 - 图标停止跳动，升级为高级视觉 -->
+        <div class="text-center mb-10">
+            <div class="icon-glow-container inline-block p-5 rounded-[2.5rem] bg-gradient-to-br from-tgblue/15 to-indigo-500/10 dark:from-white/10 dark:to-tgblue/5 mb-4 ring-1 ring-tgblue/30 dark:ring-white/15 shadow-2xl backdrop-blur-sm transition-all duration-300">
+                <i class="fab fa-telegram-plane text-5xl text-tgblue tg-icon-super transition-all duration-300"></i>
+            </div>
+            <h1 class="text-4xl font-black tracking-tight mb-2 bg-gradient-to-r from-tgblue via-cyan-400 to-tgblue bg-clip-text text-transparent dark:from-tgblue dark:to-tgalternate">草泥馬免费TG代理</h1>
+            <p class="text-slate-500 dark:text-slate-400 text-xs tracking-[0.3em] uppercase font-bold">AURORA CLUSTER · Direct Link</p>
+        </div>
+
+        <!-- 主卡片：代理集群列表 -->
+        <div class="glass-card bg-white/70 dark:bg-white/5 rounded-[3rem] p-6 md:p-10 border border-white/20 dark:border-white/10 shadow-2xl">
+            <div class="flex items-center justify-between mb-8 px-2">
+                <div class="text-left">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Quantum Nodes</p>
+                    <p class="text-emerald-500 font-bold flex items-center gap-2">
+                        <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
+                        ⚡一键极连
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Live Status</p>
+                    <!-- 动态显示代理数量，由 JavaScript 填充 -->
+                    <p id="proxy-count" class="font-black text-tgblue uppercase text-sm italic">✅ 在线代理 -- 条</p>
+                </div>
+            </div>
+
+            <!-- 动态代理列表容器 -->
+            <div class="space-y-4" id="proxy-list"></div>
+
+            <!-- 底部装饰标识 -->
+            <div class="mt-10 pt-8 border-t border-slate-200 dark:border-white/5 flex justify-around opacity-70">
+                <div class="text-center"><p class="text-[9px] font-bold tracking-wide">🔒 SSL 加密隧道</p></div>
+                <div class="text-center"><p class="text-[9px] font-bold tracking-wide">🌍 多线负载均衡</p></div>
+                <div class="text-center"><p class="text-[9px] font-bold tracking-wide">⚡ 即点即连</p></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 复制成功提示toast -->
+    <div id="toast" class="fixed bottom-10 left-1/2 -translate-x-1/2 opacity-0 transition-all duration-300 pointer-events-none translate-y-10 z-[999]">
+        <div class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-4 rounded-2xl shadow-2xl flex items-center gap-3 font-bold backdrop-blur-md">
+            <i class="fas fa-check-circle text-emerald-500 text-lg"></i>
+            <span>配置已复制，正在启动 Telegram</span>
+        </div>
+    </div>
+
+    <script>
+        // ======================= 代理节点数据（由 GitHub Actions 自动更新） =======================
+        const proxies = [
+            "tg://socks?server=45.192.200.9&port=5555&user=hanbaocloud&pass=hanbaocloud",
+            "tg://socks?server=47.254.240.76&port=5555&user=socks5&pass=socks5",
+            "tg://socks?server=47.239.202.242&port=6666&user=6666&pass=6666",
+            "tg://socks?server=43.100.106.246&port=2222&user=2222&pass=2222",
+            "tg://socks?server=47.83.174.84&port=6666&user=6666&pass=6666",
+            "tg://socks?server=47.83.186.60&port=5555&user=5555&pass=5555",
+            "tg://socks?server=47.83.8.104&port=6666&user=6666&pass=6666",
+            "tg://socks?server=43.100.106.218&port=2222&user=2222&pass=2222",
+            "tg://socks?server=47.83.1.61&port=5555&user=5555&pass=5555",
+            "tg://socks?server=47.83.174.84&port=6666&user=6666&pass=6666",
+            "tg://socks?server=47.83.186.60&port=5555&user=5555&pass=5555"
+        ];
+
+        // 渲染所有代理节点，并更新在线数量显示
+        function renderNodes() {
+            const list = document.getElementById('proxy-list');
+            if (!list) return;
+            list.innerHTML = proxies.map((url, idx) => {
+                const params = new URLSearchParams(url.split('?')[1]);
+                const server = params.get('server') || 'unknown';
+                const port = params.get('port') || '0000';
+                const nodeNum = (idx + 1).toString().padStart(2, '0');
+                return `
+                    <div class="proxy-node bg-slate-100/60 dark:bg-black/40 rounded-2xl p-4 border border-slate-200 dark:border-white/5 flex items-center justify-between group cursor-pointer transition-all hover:border-tgblue/40" onclick="connect('${url.replace(/'/g, "\\'")}')">
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="text-[9px] font-bold px-2 py-0.5 rounded-full bg-tgblue/20 dark:bg-tgblue/10 text-tgblue">NODE ${nodeNum}</span>
+                                <span class="text-[9px] text-slate-400 uppercase tracking-tighter">Premium SOCKS5</span>
+                            </div>
+                            <p class="text-base font-mono font-bold truncate text-slate-800 dark:text-cyan-200">${server}:${port}</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-tgblue to-cyan-500 text-white flex items-center justify-center shadow-md shadow-tgblue/30 group-hover:scale-105 transition-all group-hover:shadow-tgblue/50">
+                            <i class="fas fa-bolt text-sm"></i>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // 动态更新代理数量显示
+            const countElem = document.getElementById('proxy-count');
+            if (countElem) {
+                countElem.innerHTML = `✅ 在线代理 ${proxies.length} 条`;
+            }
+        }
+
+        // 核心连接逻辑：复制链接 + 跳转 Telegram
+        function connect(url) {
+            if (!url) return;
+            navigator.clipboard.writeText(url).catch(e => console.warn("复制失败", e));
+            
+            const toast = document.getElementById('toast');
+            if (toast) {
+                toast.classList.add('opacity-100', 'translate-y-0');
+                setTimeout(() => {
+                    toast.classList.remove('opacity-100', 'translate-y-0');
+                }, 1800);
+            }
+            
+            setTimeout(() => {
+                window.location.href = url;
+            }, 280);
+        }
+
+        // 主题切换
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function initTheme() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'light') {
+                document.documentElement.classList.remove('dark');
+            } else if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                if (prefersDark) {
+                    document.documentElement.classList.add('dark');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderNodes();
+            initTheme();
+        });
+
+        window.connect = connect;
+        window.toggleTheme = toggleTheme;
+    </script>
+</body>
+</html>
