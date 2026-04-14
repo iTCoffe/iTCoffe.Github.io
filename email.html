@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>临时邮箱 · 隐私保护 · 阅后即焚</title>
+
+    <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/email.png" sizes="32x32">
+    <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/email.png" type="image/png" sizes="16x16">
+    <link rel="apple-touch-icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/email.png">
+    <link rel="shortcut icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/email.png" type="image/png">
+
     <style>
         * {
             margin: 0;
@@ -23,6 +29,8 @@
             --result-bg: rgba(30, 60, 114, 0.05);
             --tag-bg: #eef2ff;
             --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.03);
+            --domain-active: #1e3c72;
+            --domain-inactive: #94a3b8;
         }
 
         body.dark {
@@ -37,6 +45,8 @@
             --result-bg: rgba(96, 165, 250, 0.1);
             --tag-bg: #334155;
             --shadow-sm: 0 8px 20px rgba(0, 0, 0, 0.2);
+            --domain-active: #60a5fa;
+            --domain-inactive: #475569;
         }
 
         body {
@@ -96,6 +106,42 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+        }
+
+        /* 域名切换器 - 新增 wemails.top 支持 */
+        .domain-switch {
+            background: var(--result-bg);
+            border-radius: 60px;
+            display: inline-flex;
+            gap: 8px;
+            padding: 6px;
+            margin: 16px auto 10px;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(4px);
+        }
+
+        .domain-option {
+            padding: 6px 22px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: transparent;
+            color: var(--text-secondary);
+            border: none;
+            font-family: inherit;
+        }
+
+        .domain-option.active {
+            background: var(--domain-active);
+            color: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .domain-option:not(.active):hover {
+            background: var(--tag-bg);
+            color: var(--text-primary);
         }
 
         .mail-display {
@@ -246,7 +292,7 @@
             margin-top: 8px;
         }
 
-        /* 主题切换按钮 (无广告后位置微调) */
+        /* 主题切换按钮 */
         .theme-toggle {
             position: fixed;
             top: 24px;
@@ -301,15 +347,27 @@
                 width: 42px;
                 height: 42px;
             }
+            .domain-option {
+                padding: 4px 16px;
+                font-size: 0.75rem;
+            }
         }
 
-        /* 加载微动画 */
         @keyframes pulse {
             0% { opacity: 0.6; }
             100% { opacity: 1; }
         }
         .loading-skeleton {
             animation: pulse 1.2s infinite;
+        }
+        
+        .error-badge {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border-radius: 40px;
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
         }
     </style>
 </head>
@@ -325,6 +383,13 @@
                 <span>🔒 完全匿名</span>
                 <span>♾️ 永久免费</span>
             </div>
+            
+            <!-- 新增域名切换: 支持 vmail.dev 和 wemails.top -->
+            <div class="domain-switch" id="domainSwitch">
+                <button data-domain="vmail" class="domain-option active">📧 vmail.dev</button>
+                <button data-domain="wemails" class="domain-option">✨ wemails.top</button>
+            </div>
+            
             <div id="addr" class="mail-display">🔄 正在生成安全邮箱...</div>
             <div class="btn-group">
                 <button onclick="copyMail()" class="btn btn-s">📋 复制地址</button>
@@ -352,11 +417,13 @@
         let currentMailboxId = null;      // 当前邮箱ID
         let isInitializing = false;        // 防止重复初始化
         let refreshInterval = null;        // 定时器句柄
+        let currentDomainType = 'vmail';   // 'vmail' 或 'wemails' , wemails对应wemails.top域名
         
         // DOM 元素
         const addrElement = document.getElementById('addr');
         const listContainer = document.getElementById('list');
         const mailCountSpan = document.getElementById('mailCount');
+        const domainBtns = document.querySelectorAll('.domain-option');
         
         // ---------- 辅助函数 ----------
         function setLoadingState(isLoading, customMsg = null) {
@@ -366,7 +433,7 @@
             }
         }
         
-        // 渲染邮件列表 (优雅处理空状态)
+        // 渲染邮件列表
         function renderMessages(messages) {
             if (!messages || messages.length === 0) {
                 listContainer.innerHTML = `<div class="empty-inbox">📭 暂无邮件 · 新邮件抵达时会自动显示在这里</div>`;
@@ -374,7 +441,6 @@
                 return;
             }
             
-            // 按时间倒序（最新在上）
             const sorted = [...messages].sort((a, b) => new Date(b.receivedAt) - new Date(a.receivedAt));
             mailCountSpan.innerText = `${sorted.length} 封`;
             
@@ -399,7 +465,6 @@
             listContainer.innerHTML = html;
         }
         
-        // 简单的防XSS
         function escapeHtml(str) {
             if (!str) return '';
             return str.replace(/[&<>]/g, function(m) {
@@ -407,25 +472,19 @@
                 if (m === '<') return '&lt;';
                 if (m === '>') return '&gt;';
                 return m;
-            }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
-                return c;
             });
         }
         
-        // 查看邮件详情弹窗 (更优雅的alert)
+        // 查看邮件详情弹窗
         window.viewMessageDetail = function(msgId, subject, preview, sender) {
-            // 由于vmail API 获取单封邮件正文可能需要额外请求，为了简洁且保留原风格，使用alert加强展示
-            // 但为了更好的体验，展示预览+主题
-            alert(`📩 邮件详情\n\n✉️ 主题：${subject}\n👤 发件人：${sender}\n\n📄 正文预览：\n${preview}\n\n🔐 提示：完整内容请在控制台或联系管理员（临时邮箱仅预览）`);
+            alert(`📩 邮件详情\n\n✉️ 主题：${subject}\n👤 发件人：${sender}\n\n📄 正文预览：\n${preview}\n\n🔐 提示：完整内容请在控制台查看，临时邮箱仅保留预览。`);
         };
         
-        // 停止旧定时器，开启新定时器 (基于当前mailbox)
         function restartRefreshTimer() {
             if (refreshInterval) {
                 clearInterval(refreshInterval);
                 refreshInterval = null;
             }
-            // 每5秒拉取一次新邮件
             refreshInterval = setInterval(() => {
                 if (currentMailboxId && !isInitializing) {
                     fetchMessages();
@@ -433,7 +492,6 @@
             }, 5000);
         }
         
-        // 获取邮件列表 (核心)
         async function fetchMessages() {
             if (!currentMailboxId) return;
             try {
@@ -449,70 +507,110 @@
                 const messages = result.data || [];
                 renderMessages(messages);
             } catch (err) {
-                // 静默失败，不覆盖已有邮件列表，保持原样
                 console.warn("fetch messages error:", err);
-                // 若网络故障但已有邮件列表，保持不变；若从未获取到邮件且当前显示空状态，不做额外动作
             }
         }
         
-        // 生成全新邮箱 (重置整个会话)
-        async function createNewMailbox(retries = 2) {
+        /**
+         * 创建邮箱 (支持域名: vmail.dev 为默认不传domain, wemails.top 则传 domain:"wemails.top")
+         * @param {string} domainType 'vmail' 或 'wemails'
+         */
+        async function createNewMailbox(domainType, retries = 2) {
             try {
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), 12000);
+                
+                let requestBody = {};
+                // 根据选择的域名类型决定是否添加 domain 字段
+                // wemails.top 需要明确指定 domain: "wemails.top"
+                if (domainType === 'wemails') {
+                    requestBody = { domain: "wemails.top" };
+                } else {
+                    // vmail.dev: 不传domain字段，API自动分配vmail.dev相关后缀 (可能是默认@vmail.dev)
+                    requestBody = {};
+                }
+                
                 const response = await fetch(`${PROXY}/mailboxes`, {
                     method: 'POST',
                     headers: {
                         'X-API-Key': API_KEY,
                         'Content-Type': 'application/json'
                     },
+                    body: JSON.stringify(requestBody),
                     signal: controller.signal
                 });
                 clearTimeout(timeoutId);
-                if (!response.ok) throw new Error(`API error ${response.status}`);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error(`API error ${response.status}: ${errorText}`);
+                    throw new Error(`API error ${response.status}: ${errorText.substring(0, 80)}`);
+                }
+                
                 const result = await response.json();
                 const mailbox = result.data;
                 if (!mailbox || !mailbox.id || !mailbox.address) {
                     throw new Error('Invalid mailbox response');
                 }
+                // 验证生成的邮箱地址是否与期望域名一致 (仅wemails.top做校验)
+                if (domainType === 'wemails' && !mailbox.address.endsWith('@wemails.top')) {
+                    console.warn(`期望 wemails.top 后缀, 实际得到 ${mailbox.address}, 但仍继续使用`);
+                }
+                if (domainType === 'vmail' && mailbox.address.includes('@wemails.top')) {
+                    // 极小概率兜底: 如果vmail模式却拿到wemails.top, 则报错重试
+                    throw new Error('域名不匹配, 请重试');
+                }
                 return { id: mailbox.id, address: mailbox.address };
             } catch (err) {
                 if (retries > 0) {
                     await new Promise(r => setTimeout(r, 800));
-                    return createNewMailbox(retries - 1);
+                    return createNewMailbox(domainType, retries - 1);
                 }
                 throw err;
             }
         }
         
-        // 初始化邮箱 (全流程)
+        // 更新域名UI激活状态
+        function updateDomainUI() {
+            domainBtns.forEach(btn => {
+                const domainVal = btn.getAttribute('data-domain');
+                if (domainVal === currentDomainType) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+        
+        // 初始化邮箱 (根据 currentDomainType)
         async function initMailbox() {
             if (isInitializing) {
                 console.log("已有初始化流程进行中，跳过");
                 return false;
             }
             isInitializing = true;
-            setLoadingState(true, "🌀 正在申请全新邮箱地址...");
+            const domainLabel = currentDomainType === 'wemails' ? 'wemails.top' : 'vmail.dev';
+            setLoadingState(true, `🌀 正在申请 ${domainLabel} 邮箱...`);
             
-            // 显示骨架等待效果
             listContainer.innerHTML = `<div class="empty-inbox loading-skeleton">⏳ 正在建立安全信道，请稍后...</div>`;
             
             try {
-                const mailbox = await createNewMailbox(2);
+                const mailbox = await createNewMailbox(currentDomainType, 2);
                 currentMailboxId = mailbox.id;
                 addrElement.innerText = mailbox.address;
-                // 清空邮件列表
                 renderMessages([]);
-                // 立即尝试拉取一次（新邮箱肯定是空，但为了状态统一）
                 await fetchMessages();
-                // 重启定时器（保证新邮箱轮询）
                 restartRefreshTimer();
                 isInitializing = false;
                 return true;
             } catch (error) {
                 console.error("初始化失败:", error);
-                addrElement.innerText = "⚠️ 服务繁忙，请点击「更换地址」重试";
-                listContainer.innerHTML = `<div class="empty-inbox">❌ 临时邮箱生成失败<br>网络波动或代理异常，请点下方按钮重试</div>`;
+                let errorMsg = `⚠️ 生成 ${domainLabel} 邮箱失败: ${error.message || '网络波动'}`;
+                if (currentDomainType === 'wemails' && error.message.includes('API error')) {
+                    errorMsg = `✨ wemails.top 域名暂时不可用？可尝试切换至 vmail.dev 或点击「更换地址」重试。\n详细: ${error.message.substring(0, 100)}`;
+                }
+                addrElement.innerText = errorMsg;
+                listContainer.innerHTML = `<div class="empty-inbox">❌ 临时邮箱生成失败<br>${errorMsg}<br>您可以尝试切换域名或点击下方按钮重试</div>`;
                 isInitializing = false;
                 return false;
             }
@@ -524,21 +622,18 @@
                 alert("正在生成新地址，请稍后再试~");
                 return;
             }
-            // 清除旧定时器，避免旧id干扰
             if (refreshInterval) {
                 clearInterval(refreshInterval);
                 refreshInterval = null;
             }
-            // 重置当前ID
             currentMailboxId = null;
-            // 重新初始化
             await initMailbox();
         }
         
         // 复制邮箱地址
         window.copyMail = function() {
             const mailAddr = addrElement.innerText;
-            if (!mailAddr || !mailAddr.includes('@') || mailAddr.includes('⚠️') || mailAddr.includes('生成')) {
+            if (!mailAddr || !mailAddr.includes('@') || mailAddr.includes('⚠️') || mailAddr.includes('失败') || mailAddr.includes('繁忙')) {
                 alert('邮箱地址尚未就绪，请稍后或点击「更换地址」重新生成');
                 return;
             }
@@ -549,9 +644,26 @@
             });
         };
         
-        // ---------- 主题切换 (完美深色/浅色) ----------
+        // 切换域名 (新增 wemails.top 核心功能)
+        async function switchDomain(domainType) {
+            if (domainType === currentDomainType) return;
+            if (isInitializing) {
+                alert("正在处理中，稍后再切换域名");
+                return;
+            }
+            currentDomainType = domainType;
+            updateDomainUI();
+            // 清除旧邮箱状态，重新生成对应域名的邮箱
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+                refreshInterval = null;
+            }
+            currentMailboxId = null;
+            await initMailbox();
+        }
+        
+        // ---------- 主题切换 ----------
         const themeBtn = document.getElementById('themeToggle');
-        // 检测本地存储
         const storedTheme = localStorage.getItem('kulaoTheme');
         if (storedTheme === 'dark') {
             document.body.classList.add('dark');
@@ -560,7 +672,6 @@
             document.body.classList.remove('dark');
             themeBtn.textContent = '🌙';
         } else {
-            // 跟随系统
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             if (prefersDark) {
                 document.body.classList.add('dark');
@@ -582,12 +693,25 @@
             }
         };
         
+        // 绑定域名切换事件
+        domainBtns.forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const domainVal = btn.getAttribute('data-domain');
+                if (domainVal === 'vmail') {
+                    switchDomain('vmail');
+                } else if (domainVal === 'wemails') {
+                    switchDomain('wemails');
+                }
+            });
+        });
+        
         // ---------- 页面启动 ----------
         window.addEventListener('DOMContentLoaded', async () => {
-            // 启动邮箱
+            // 默认域名 vmail，启动邮箱
+            currentDomainType = 'vmail';
+            updateDomainUI();
             await initMailbox();
             
-            // 额外增强: 网络恢复后自动重连一次
             window.addEventListener('online', () => {
                 if (!currentMailboxId) {
                     resetMailbox();
@@ -597,17 +721,11 @@
             });
         });
         
-        // 暴露全局重置函数 (供按钮调用)
         window.resetMailbox = resetMailbox;
         
-        // 页面关闭前清理定时器 (好习惯)
         window.addEventListener('beforeunload', () => {
             if (refreshInterval) clearInterval(refreshInterval);
         });
-        
-        // 当fetchMessages出错时不会导致UI假死，已经有优雅降级
-        // 补充防止多次refresh导致mid被置空的边缘情况
-        // 当更换地址时，如果还在轮询旧地址，已被resetMailbox清除定时器并重新初始化，完美。
     </script>
 </body>
 </html>
