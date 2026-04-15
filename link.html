@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文件直链托管 · 稳定版</title>
+    <title>文件直鏈托管 · 穩定版</title>
 
     <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" sizes="32x32">
     <link rel="icon" href="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" type="image/png" sizes="16x16">
@@ -185,7 +185,6 @@
             font-size: 12px;
             color: var(--text-secondary);
         }
-        /* 修复：将 .upload-area 作为拖拽区域的主类 */
         .upload-area {
             border: 2px dashed var(--border-color);
             border-radius: 16px;
@@ -205,7 +204,6 @@
             background: var(--dragover-bg);
             transform: scale(1.02);
         }
-        /* 上传信息样式 */
         .upload-info {
             font-size: 12px;
             color: var(--text-secondary);
@@ -318,13 +316,6 @@
             font-size: 14px;
             color: var(--primary);
             font-weight: 600;
-        }
-        .retry-notice {
-            font-size: 12px;
-            color: var(--warning);
-            text-align: center;
-            margin-top: 8px;
-            display: none;
         }
         .result-item {
             margin-bottom: 20px;
@@ -458,12 +449,6 @@
             .title { font-size: 28px; }
             .theme-toggle { width: 40px; height: 40px; font-size: 18px; }
         }
-        @media (max-width: 375px) {
-            .card { padding: 20px 12px; }
-            .upload-area { padding: 32px 12px; }
-            .title { font-size: 24px; }
-            .theme-toggle { width: 36px; height: 36px; font-size: 16px; }
-        }
     </style>
 </head>
 <body>
@@ -474,62 +459,53 @@
     <div class="container">
         <div class="header">
             <img src="https://cdn.jsdmirror.com/gh/iTCoffe/iTCoffe.Github.io@List/Gbastos.png" alt="头像" class="avatar">
-            <h1 class="title">文件直链托管 · 稳定版</h1>
-            <p class="subtitle">稳定可靠的文件直链生成服务 · 永久保存 · 最大支持200MB</p>
+            <h1 class="title">文件直鏈托管 · 穩定版</h1>
+            <p class="subtitle">穩定可靠的文件直鏈生成服務 · 永久保存 · 最大支持200MB</p>
         </div>
 
         <div class="card">
             <div class="file-info" id="fileInfo">
-                <p>📄 待上传：<span id="fileName"></span></p>
+                <p>📄 待上傳：<span id="fileName"></span></p>
                 <small>大小：<span id="fileSize"></span> | 格式：<span id="fileType"></span></small>
             </div>
 
             <div id="uploadForm">
-                <!-- 修复：class 从 upload-zone 改为 upload-area，以应用正确的样式和拖拽高亮 -->
                 <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
                     <div style="font-size: 40px;">📂</div>
-                    <p style="font-size: 14px; font-weight: 600; margin-top: 8px;">点击或拖拽上传</p>
+                    <p style="font-size: 14px; font-weight: 600; margin-top: 8px;">點擊或拖拽上傳</p>
                     <div class="upload-info">
-                        ✅ 不限格式 · 📦 200MB内<br>
-                        ☁️ 永久储存 · ⚡ 加速通道
+                        ✅ 不限格式 · 📦 200MB內<br>
+                        ☁️ 永久儲存 · ⚡ 原始直連
                     </div>
                     <input type="file" id="fileInput" hidden>
                 </div>
-                <button class="btn" onclick="document.getElementById('fileInput').click()">立即上传文件</button>
+                <button class="btn" onclick="document.getElementById('fileInput').click()">立即上傳文件</button>
             </div>
 
             <div class="progress-section" id="progressSection">
                 <div class="loading-spinner"></div>
-                <p class="progress-title" id="progressStatus">正在上传到云端服务器...</p>
+                <p class="progress-title" id="progressStatus">正在上傳到伺服器...</p>
                 <div class="progress-bar">
                     <div class="progress-fill" id="progressBar"></div>
                 </div>
                 <p class="progress-percent" id="percentText">0%</p>
-                <p class="retry-notice" id="retryNotice">⚠️ 当前通道繁忙，正在切换备用线路(优先使用国内节点)...</p>
             </div>
 
             <div class="result-section" id="resultSection">
                 <div class="result-item">
-                    <label class="result-label">🚀 镜像加速链接</label>
-                    <div class="result-input-group">
-                        <input type="text" id="proxyLink" class="result-input" readonly>
-                        <button class="copy-btn" onclick="copyValue('proxyLink', this)">复制</button>
-                    </div>
-                </div>
-                <div class="result-item">
-                    <label class="result-label">🔗 原始官方链接</label>
+                    <label class="result-label">🔗 原始官方直鏈</label>
                     <div class="result-input-group">
                         <input type="text" id="rawLink" class="result-input" readonly>
-                        <button class="copy-btn" onclick="copyValue('rawLink', this)">复制</button>
+                        <button class="copy-btn" onclick="copyValue('rawLink', this)">複製</button>
                     </div>
                 </div>
-                <button class="btn btn-outline" onclick="location.reload()">重新上传</button>
+                <button class="btn btn-outline" onclick="location.reload()">重新上傳</button>
             </div>
 
             <div class="history-section" id="historySection">
                 <div class="history-header">
-                    <h3 class="history-title">上传历史</h3>
-                    <button class="clear-history" onclick="clearHistory()">清空记录</button>
+                    <h3 class="history-title">上傳歷史</h3>
+                    <button class="clear-history" onclick="clearHistory()">清空紀錄</button>
                 </div>
                 <div class="history-list" id="historyList"></div>
             </div>
@@ -540,8 +516,10 @@
         (function() {
             const MAX_FILE_SIZE = 200 * 1024 * 1024;
             const FORBIDDEN_TYPES = ['exe', 'bat', 'sh', 'php', 'js', 'py', 'asp', 'aspx', 'jsp'];
+            // 直接使用官方 API
+            const API = 'https://catbox.moe/user/api.php';
 
-            // 主题切换
+            // 主題切換邏輯
             const themeToggle = document.getElementById('themeToggle');
             const body = document.body;
             const savedTheme = localStorage.getItem('theme');
@@ -566,11 +544,9 @@
                 }
             });
 
-            // 全局阻止拖拽默认行为（避免浏览器打开文件）
             document.addEventListener('dragover', (e) => e.preventDefault());
             document.addEventListener('drop', (e) => e.preventDefault());
 
-            // Toast 提示
             function showToast(message, type = 'info') {
                 const toast = document.getElementById('toast');
                 toast.textContent = message;
@@ -581,14 +557,12 @@
                 }, 3000);
             }
 
-            // 历史记录
-            function saveUploadHistory(fileName, rawLink, proxyLink) {
+            function saveUploadHistory(fileName, rawLink) {
                 const history = JSON.parse(localStorage.getItem('uploadHistory') || '[]');
                 history.unshift({
                     id: Date.now(),
                     name: fileName,
                     raw: rawLink,
-                    proxy: proxyLink,
                     time: new Date().toLocaleString()
                 });
                 if (history.length > 10) history.pop();
@@ -612,8 +586,7 @@
                         <p class="history-name">${escapeHtml(item.name)}</p>
                         <p class="history-time">${escapeHtml(item.time)}</p>
                         <div class="history-buttons">
-                            <button class="history-btn" onclick="copyHistoryLink('${item.raw.replace(/'/g, "\\'")}')">复制原始链接</button>
-                            <button class="history-btn" onclick="copyHistoryLink('${item.proxy.replace(/'/g, "\\'")}')">复制加速链接</button>
+                            <button class="history-btn" onclick="copyHistoryLink('${item.raw.replace(/'/g, "\\'")}')">複製鏈接</button>
                         </div>
                     </div>
                 `).join('');
@@ -630,10 +603,8 @@
             window.copyHistoryLink = function(link) {
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(link).then(() => {
-                        showToast('链接复制成功！', 'success');
-                    }).catch(() => {
-                        fallbackCopyText(link);
-                    });
+                        showToast('鏈接複製成功！', 'success');
+                    }).catch(() => fallbackCopyText(link));
                 } else {
                     fallbackCopyText(link);
                 }
@@ -648,22 +619,21 @@
                 tempInput.select();
                 try {
                     document.execCommand('copy');
-                    showToast('链接复制成功！', 'success');
+                    showToast('鏈接複製成功！', 'success');
                 } catch (err) {
-                    showToast('复制失败，请手动复制', 'error');
+                    showToast('複製失敗，請手動複製', 'error');
                 }
                 document.body.removeChild(tempInput);
             }
 
             window.clearHistory = function() {
-                if (confirm('确定要清空所有上传记录吗？')) {
+                if (confirm('確定要清空所有上傳紀錄嗎？')) {
                     localStorage.removeItem('uploadHistory');
                     renderHistory();
-                    showToast('上传记录已清空', 'info');
+                    showToast('紀錄已清空', 'info');
                 }
             };
 
-            // DOM 元素
             const fileInput = document.getElementById('fileInput');
             const dropZone = document.getElementById('dropZone');
             const progressSection = document.getElementById('progressSection');
@@ -675,10 +645,8 @@
             const fileTypeEl = document.getElementById('fileType');
             const progressBar = document.getElementById('progressBar');
             const percentText = document.getElementById('percentText');
-            const retryNotice = document.getElementById('retryNotice');
             const progressStatus = document.getElementById('progressStatus');
 
-            // 隐藏文件信息并清空内容
             function hideFileInfo() {
                 fileInfo.style.display = 'none';
                 fileNameEl.textContent = '';
@@ -686,38 +654,29 @@
                 fileTypeEl.textContent = '';
             }
 
-            // 初始隐藏
             hideFileInfo();
 
-            window.addEventListener('load', () => {
-                renderHistory();
-            });
+            window.addEventListener('load', () => renderHistory());
 
-            // 文件验证
             function validateFile(file) {
                 if (file.size > MAX_FILE_SIZE) {
-                    showToast(`文件大小超过限制！最大支持200MB，当前：${(file.size/1024/1024).toFixed(2)}MB`, 'error');
+                    showToast(`文件太大了！最大200MB，當前：${(file.size/1024/1024).toFixed(2)}MB`, 'error');
                     return false;
                 }
-                
                 const fileExt = file.name.split('.').pop()?.toLowerCase() || '';
                 if (FORBIDDEN_TYPES.includes(fileExt)) {
-                    showToast('禁止上传可执行/脚本文件！', 'error');
+                    showToast('禁止上傳脚本或執行文件！', 'error');
                     return false;
                 }
-                
                 return true;
             }
 
-            // 拖拽事件
             ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-                dropZone.addEventListener(eventName, preventDefaults, false);
+                dropZone.addEventListener(eventName, e => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }, false);
             });
-
-            function preventDefaults(e) {
-                e.preventDefault();
-                e.stopPropagation();
-            }
 
             ['dragenter', 'dragover'].forEach(eventName => {
                 dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
@@ -727,8 +686,18 @@
                 dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
             });
 
-            dropZone.addEventListener('drop', handleDrop, false);
-            dropZone.addEventListener('click', () => fileInput.click());
+            dropZone.addEventListener('drop', e => {
+                const files = e.dataTransfer.files;
+                if (files.length) {
+                    const file = files[0];
+                    if (validateFile(file)) {
+                        showFileInfo(file);
+                        handleUpload(file);
+                    } else {
+                        hideFileInfo();
+                    }
+                }
+            }, false);
             
             fileInput.addEventListener('change', (e) => {
                 if (e.target.files.length) {
@@ -737,181 +706,101 @@
                         showFileInfo(file);
                         handleUpload(file);
                     } else {
-                        hideFileInfo(); // 验证失败时隐藏文件信息
+                        hideFileInfo();
                     }
                 }
             });
 
-            function handleDrop(e) {
-                const dt = e.dataTransfer;
-                const files = dt.files;
-                if (files.length) {
-                    const file = files[0];
-                    if (validateFile(file)) {
-                        showFileInfo(file);
-                        handleUpload(file);
-                    } else {
-                        hideFileInfo(); // 验证失败时隐藏文件信息
-                    }
-                }
-            }
-
             function showFileInfo(file) {
                 const fileExt = file.name.split('.').pop()?.toLowerCase() || '未知';
                 const fileSize = (file.size/1024/1024).toFixed(2) + 'MB';
-                
                 fileNameEl.textContent = file.name;
                 fileSizeEl.textContent = fileSize;
                 fileTypeEl.textContent = fileExt;
                 fileInfo.style.display = 'block';
             }
 
-            // ----- 融合后的上传逻辑：多线路故障转移（带节点名称）-----
-            const API = 'https://catbox.moe/user/api.php';
-            const DOMAIN = 'https://cors.ifanr.pp.ua/';   // 镜像加速域名
-
-            // 优化后的节点池（国内用户优先），包含友好名称
-            const CDN_POOL = [
-                { name: '线路 1 (国内优化)', url: ' https://seep.eu.org/' },
-                { name: '线路 2 (国内优化)', url: 'https://cors.eu.org/' },
-                { name: '线路 3 (国内优化)', url: 'https://cors-proxy.fringe.zone/' },
-                { name: '线路 4 (国际备用)', url: 'https://corsproxy.io/?' },
-                { name: '线路 5 (最后手段)', url: 'https://api.allorigins.win/raw?url=' }
-            ];
-
             let currentXHR = null;
-
-            function resetProgress() {
-                progressBar.style.width = '0%';
-                percentText.innerText = '0%';
-                retryNotice.style.display = 'none';
-                progressStatus.innerText = '正在上传到云端服务器...';
-            }
 
             function handleUpload(file) {
                 uploadForm.style.display = 'none';
                 progressSection.style.display = 'block';
                 resultSection.style.display = 'none';
-                resetProgress();
+                progressBar.style.width = '0%';
+                percentText.innerText = '0%';
+                progressStatus.innerText = '正在上傳到伺服器...';
 
-                // 封装单个上传任务为 Promise
-                const uploadTask = (cdn) => new Promise((resolve, reject) => {
-                    const xhr = new XMLHttpRequest();
-                    currentXHR = xhr; // 保存以便页面卸载时取消
+                const xhr = new XMLHttpRequest();
+                currentXHR = xhr;
 
-                    const targetUrl = cdn.url + encodeURIComponent(API);
-                    xhr.open('POST', targetUrl);
-                    xhr.timeout = 60000; // 60秒超时（适合大文件）
+                xhr.open('POST', API);
+                // 增加超時時間到 3 分鐘，因爲直連海外可能會慢
+                xhr.timeout = 180000;
 
-                    xhr.upload.onprogress = (e) => {
-                        if (e.lengthComputable) {
-                            const percent = Math.round((e.loaded / e.total) * 100);
-                            progressBar.style.width = percent + '%';
-                            percentText.innerText = percent + '%';
-                        }
-                    };
-
-                    xhr.onload = () => {
-                        currentXHR = null;
-                        const response = xhr.responseText.trim();
-                        if (xhr.status === 200 && response.includes('http')) {
-                            const urlMatch = response.match(/https?:\/\/[^\s]+/);
-                            if (urlMatch) {
-                                resolve(urlMatch[0]);
-                            } else {
-                                reject(new Error('响应中没有找到链接'));
-                            }
-                        } else {
-                            reject(new Error(`HTTP ${xhr.status}`));
-                        }
-                    };
-
-                    xhr.onerror = () => {
-                        currentXHR = null;
-                        reject(new Error('网络错误'));
-                    };
-
-                    xhr.ontimeout = () => {
-                        currentXHR = null;
-                        reject(new Error('超时'));
-                    };
-
-                    const fd = new FormData();
-                    fd.append('reqtype', 'fileupload');
-                    fd.append('fileToUpload', file);
-
-                    try {
-                        xhr.send(fd);
-                    } catch (err) {
-                        currentXHR = null;
-                        reject(err);
+                xhr.upload.onprogress = (e) => {
+                    if (e.lengthComputable) {
+                        const percent = Math.round((e.loaded / e.total) * 100);
+                        progressBar.style.width = percent + '%';
+                        percentText.innerText = percent + '%';
                     }
-                });
-
-                // 显示上传结果
-                const showResult = (rawUrl) => {
-                    const noProtocol = rawUrl.replace(/^https?:\/\//, '');
-                    document.getElementById('rawLink').value = rawUrl;
-                    document.getElementById('proxyLink').value = DOMAIN + noProtocol;
-
-                    saveUploadHistory(file.name, rawUrl, DOMAIN + noProtocol);
-
-                    progressSection.style.display = 'none';
-                    resultSection.style.display = 'block';
-                    showToast('上传成功！', 'success');
                 };
 
-                // 故障转移循环
-                (async () => {
-                    for (const [index, cdn] of CDN_POOL.entries()) {
-                        try {
-                            progressStatus.innerText = `正在通过 ${cdn.name} 上传...`;
-                            if (index > 0) {
-                                retryNotice.style.display = 'block'; // 从第二个开始显示切换提示
-                            }
-                            const rawUrl = await uploadTask(cdn);
-                            showResult(rawUrl);
-                            return; // 成功则退出
-                        } catch (err) {
-                            console.warn(`节点 ${cdn.name} 失败:`, err.message);
-                            // 继续尝试下一个节点
+                xhr.onload = () => {
+                    currentXHR = null;
+                    const response = xhr.responseText.trim();
+                    // Catbox 成功返回 200 並包含鏈接
+                    if (xhr.status === 200 && response.includes('http')) {
+                        const urlMatch = response.match(/https?:\/\/[^\s]+/);
+                        if (urlMatch) {
+                            const rawUrl = urlMatch[0];
+                            document.getElementById('rawLink').value = rawUrl;
+                            saveUploadHistory(file.name, rawUrl);
+                            progressSection.style.display = 'none';
+                            resultSection.style.display = 'block';
+                            showToast('上傳成功！', 'success');
+                        } else {
+                            handleError('響應格式錯誤');
                         }
+                    } else {
+                        handleError(`上傳失敗: HTTP ${xhr.status}`);
                     }
-                    // 所有节点均失败
-                    showToast('所有代理线路均不可用，请稍后重试或更换网络', 'error');
-                    setTimeout(() => location.reload(), 1500);
-                })();
+                };
+
+                xhr.onerror = () => handleError('網絡連線錯誤（請檢查網路或是否需要代理）');
+                xhr.ontimeout = () => handleError('上傳超時');
+
+                const fd = new FormData();
+                fd.append('reqtype', 'fileupload');
+                fd.append('fileToUpload', file);
+
+                try {
+                    xhr.send(fd);
+                } catch (err) {
+                    handleError(err.message);
+                }
             }
 
-            // 复制功能
+            function handleError(msg) {
+                currentXHR = null;
+                showToast(msg, 'error');
+                setTimeout(() => location.reload(), 2000);
+            }
+
             window.copyValue = function(id, btn) {
                 const input = document.getElementById(id);
-                if (!input.value) {
-                    showToast('无内容可复制', 'warning');
-                    return;
-                }
-
                 if (navigator.clipboard) {
                     navigator.clipboard.writeText(input.value).then(() => {
-                        btnSuccess(btn);
-                        showToast('复制成功！', 'success');
-                    }).catch(() => {
-                        fallbackCopyBtn(input.value, btn);
-                    });
-                } else {
-                    fallbackCopyBtn(input.value, btn);
+                        const originalText = btn.textContent;
+                        btn.textContent = '已複製 ✓';
+                        btn.style.background = 'var(--success)';
+                        setTimeout(() => {
+                            btn.textContent = originalText;
+                            btn.style.background = '';
+                        }, 2000);
+                        showToast('複製成功！', 'success');
+                    }).catch(() => fallbackCopyBtn(input.value, btn));
                 }
             };
-
-            function btnSuccess(btn) {
-                const originalText = btn.textContent;
-                btn.textContent = '已复制 ✓';
-                btn.style.background = 'var(--success)';
-                setTimeout(() => {
-                    btn.textContent = originalText;
-                    btn.style.background = '';
-                }, 2000);
-            }
 
             function fallbackCopyBtn(value, btn) {
                 const tempInput = document.createElement('textarea');
@@ -920,23 +809,24 @@
                 tempInput.style.opacity = 0;
                 document.body.appendChild(tempInput);
                 tempInput.select();
-                
                 try {
                     document.execCommand('copy');
-                    btnSuccess(btn);
-                    showToast('复制成功！', 'success');
+                    const originalText = btn.textContent;
+                    btn.textContent = '已複製 ✓';
+                    btn.style.background = 'var(--success)';
+                    setTimeout(() => {
+                        btn.textContent = originalText;
+                        btn.style.background = '';
+                    }, 2000);
+                    showToast('複製成功！', 'success');
                 } catch (err) {
-                    showToast('复制失败，请手动复制', 'error');
+                    showToast('複製失敗', 'error');
                 }
-                
                 document.body.removeChild(tempInput);
             }
 
-            // 页面卸载前取消请求
-            window.addEventListener('beforeunload', function() {
-                if (currentXHR) {
-                    currentXHR.abort();
-                }
+            window.addEventListener('beforeunload', () => {
+                if (currentXHR) currentXHR.abort();
             });
         })();
     </script>
