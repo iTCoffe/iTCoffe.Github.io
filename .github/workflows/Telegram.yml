@@ -3,7 +3,7 @@ name: 更新 Telegram 代理列表
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */3 * * *'
 
 jobs:
   update-proxies:
@@ -20,7 +20,7 @@ jobs:
       - name: 提取并替换代理链接
         env:
           TARGET_FILE: TGProxy.html
-          REMOTE_RAW_URL: https://raw.githubusercontent.com/Jsnzkpg/TelegramProxy/Jsnzkpg/index.html
+          REMOTE_RAW_URL: https://raw.githubusercontent.com/Jsnzkpg/TelegramProxy/refs/heads/Jsnzkpg/index.html
         run: |
           cat > update.mjs << 'EOF'
           import fs from 'fs';
